@@ -35,14 +35,37 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # Django core
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.discord',
+
+    # Auth REST
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    # 3rd Party
+    'corsheaders',
+    'django_extensions',
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    # Your apps
     'users',
+    'xp',
+    'seasons',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
