@@ -29,8 +29,13 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "api.igoultra.de",
+    ".herokuapp.com",
+    "igoultra-backend-d20b10508b97.herokuapp.com",
+]
 
 # Application definition
 
@@ -98,14 +103,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ultrabackend.wsgi.application'
 
 
-# Database
+# --------------------------------------------
+# 🛢️ PostgreSQL Database Configuration
+# --------------------------------------------
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"postgres://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DB')}"
+    "default": dj_database_url.config(
+        # Use Heroku's DATABASE_URL if available, otherwise fallback to local .env
+        default=os.getenv("DATABASE_URL_LOCAL"),
+
+        # Keep database connections open for 10 minutes to improve performance
+        conn_max_age=600,
+
+        # Require SSL only in production (Heroku will have DEBUG=False)
+        ssl_require=not DEBUG,
     )
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
