@@ -25,11 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # Set debug mode from env, default to False for safety
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
 # --------------------------------------------
 # 🌍 Allowed Hosts
-# --------------------------------------------
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -41,13 +40,11 @@ ALLOWED_HOSTS = [
 
 # --------------------------------------------
 # 🔑 Site Framework
-# --------------------------------------------
 
 SITE_ID = 1
 
 # --------------------------------------------
 # 🧩 Installed Applications
-# --------------------------------------------
 
 INSTALLED_APPS = [
     # Django core apps
@@ -83,7 +80,6 @@ INSTALLED_APPS = [
 
 # --------------------------------------------
 # 🧱 Middleware Stack
-# --------------------------------------------
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -102,14 +98,12 @@ MIDDLEWARE = [
 
 # --------------------------------------------
 # 🔗 URL and WSGI Settings
-# --------------------------------------------
 
 ROOT_URLCONF = 'ultrabackend.urls'
 WSGI_APPLICATION = 'ultrabackend.wsgi.application'
 
 # --------------------------------------------
 # 🎨 Templates Configuration
-# --------------------------------------------
 
 TEMPLATES = [
     {
@@ -128,20 +122,21 @@ TEMPLATES = [
 
 # --------------------------------------------
 # 🛢️ PostgreSQL Database Configuration
-# --------------------------------------------
+
+# Fix UnicodeDecodeError by cleaning URL if needed
+raw_url = os.getenv("DATABASE_URL_LOCAL")
+clean_url = raw_url.encode("utf-8", "ignore").decode("utf-8") if raw_url else None
 
 DATABASES = {
-    "default": dj_database_url.config(
-        # Heroku uses DATABASE_URL automatically if available
-        default=os.getenv("DATABASE_URL_LOCAL"),
-        conn_max_age=600,  # Keeps DB connections open for 10 minutes
-        ssl_require=not DEBUG,  # Enforce SSL in production only
+    "default": dj_database_url.parse(
+        clean_url,
+        conn_max_age=600,
+        ssl_require=not DEBUG,
     )
 }
 
 # --------------------------------------------
 # 🔐 Password Validation
-# --------------------------------------------
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -152,7 +147,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # --------------------------------------------
 # 🌐 Localization Settings
-# --------------------------------------------
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
@@ -161,23 +155,20 @@ USE_TZ = True
 
 # --------------------------------------------
 # 📦 Static and Media Files Configuration
-# --------------------------------------------
 
-# URL to access static files (e.g., CSS, JS)
 STATIC_URL = '/static/'
-
-# Directory where collectstatic stores files for production
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Enable WhiteNoise static file storage with caching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Optional media file support (e.g., for uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # --------------------------------------------
 # 🧪 Miscellaneous Settings
-# --------------------------------------------
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --------------------------------------------
+# 👤 Custom User Model
+
+AUTH_USER_MODEL = "users.User"
