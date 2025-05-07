@@ -193,6 +193,12 @@ ACCOUNT_EMAIL_REQUIRED        = False
 ACCOUNT_USERNAME_REQUIRED     = True
 ACCOUNT_EMAIL_VERIFICATION    = "optional"
 
+# After login, redirect to site root (middleware will forward to complete_profile)
+LOGIN_REDIRECT_URL = "/"
+
+# Automatically create a user on social login without showing the signup form
+SOCIALACCOUNT_AUTO_SIGNUP = True
+
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
         "APP": {
@@ -213,6 +219,7 @@ SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:8001",
     "https://your-frontend-domain.com",
 ]
 
@@ -221,5 +228,16 @@ CORS_ALLOWED_ORIGINS = [
 # --------------------------------------------
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    "http://localhost:8001",
     "https://your-frontend-domain.com",
 ]
+
+# --------------------------------------------
+# 🚫 Disable all outgoing email (development)
+# --------------------------------------------
+# Don’t require or send any verification emails
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+
+# Drop all send_mail calls silently (no SMTP)
+EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
