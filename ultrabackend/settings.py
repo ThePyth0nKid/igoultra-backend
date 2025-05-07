@@ -238,6 +238,3 @@ else:
 # 🚫 Email Backend (development)
 # --------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
-
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
