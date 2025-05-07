@@ -3,23 +3,14 @@ import dj_database_url
 from dotenv import load_dotenv
 from pathlib import Path
 
-# Load environment variables from .env file
+# Load environment variables
 load_dotenv()
 
-# --------------------------------------------
-# 📁 Base Directory Setup
-# --------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# --------------------------------------------
-# 🔐 Secret Key & Debug Mode
-# --------------------------------------------
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
+USE_HTTPS = os.getenv("USE_HTTPS", "False") == "True"
 
-# --------------------------------------------
-# 🌍 Allowed Hosts
-# --------------------------------------------
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
@@ -28,24 +19,13 @@ ALLOWED_HOSTS = [
     "igoultra-backend-d20b10508b97.herokuapp.com",
 ]
 
-# --------------------------------------------
-# 🔑 Site Framework
-# --------------------------------------------
-SITE_ID = 1
-
-# --------------------------------------------
-# 🔒 Heroku SSL Support
-# --------------------------------------------
-USE_HTTPS = os.getenv("USE_HTTPS", "False") == "True"
+# Trust Heroku proxy headers
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
-SECURE_SSL_REDIRECT = USE_HTTPS  # Redirect all HTTP to HTTPS
+SECURE_SSL_REDIRECT = USE_HTTPS
 
-# --------------------------------------------
-# 🧩 Installed Applications
-# --------------------------------------------
+# Apps
 INSTALLED_APPS = [
-    # Core Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -53,8 +33,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-
-    # Third-party apps
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -66,16 +44,13 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
     "whitenoise.runserver_nostatic",
-
-    # Local apps
     "users",
     "xp",
     "seasons",
 ]
 
-# --------------------------------------------
-# 🧱 Middleware Stack
-# --------------------------------------------
+SITE_ID = 1
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -90,15 +65,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# --------------------------------------------
-# 🔗 URL & WSGI Settings
-# --------------------------------------------
 ROOT_URLCONF = "ultrabackend.urls"
 WSGI_APPLICATION = "ultrabackend.wsgi.application"
 
-# --------------------------------------------
-# 🎨 Templates Configuration
-# --------------------------------------------
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -114,12 +83,9 @@ TEMPLATES = [
     },
 ]
 
-# --------------------------------------------
-# 🛢️ Database (PostgreSQL on Heroku)
-# --------------------------------------------
+# Database
 raw_url = os.getenv("DATABASE_URL_LOCAL") or os.getenv("DATABASE_URL")
 clean_url = raw_url.encode("utf-8", "ignore").decode("utf-8") if raw_url else None
-
 DATABASES = {
     "default": dj_database_url.parse(
         clean_url,
@@ -128,43 +94,9 @@ DATABASES = {
     )
 }
 
-# --------------------------------------------
-# 🔐 Password Validation
-# --------------------------------------------
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
-
-# --------------------------------------------
-# 🌐 Internationalization
-# --------------------------------------------
-LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
-USE_I18N = True
-USE_TZ = True
-
-# --------------------------------------------
-# 📦 Static & Media Files
-# --------------------------------------------
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
-# --------------------------------------------
-# ⚙️ Miscellaneous
-# --------------------------------------------
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "users.User"
 
-# --------------------------------------------
-# 🔐 REST Framework (Session Auth Only)
-# --------------------------------------------
+# REST Framework (Session only)
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
@@ -174,33 +106,53 @@ REST_FRAMEWORK = {
     ],
 }
 
-# --------------------------------------------
-# 🍪 Cookie & CSRF Configuration
-# --------------------------------------------
+# Passwords
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+# Language & Time
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# Static & Media
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ----------------------------
+# 🔐 Cookie & CSRF Settings
+# ----------------------------
 SESSION_COOKIE_SECURE = USE_HTTPS
 CSRF_COOKIE_SECURE = USE_HTTPS
-SESSION_COOKIE_DOMAIN = "api.igoultra.de" if USE_HTTPS else None
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = False  # Required for some JavaScript-based setups
 
-if USE_HTTPS:
-    SESSION_COOKIE_SAMESITE = "None"
-    CSRF_COOKIE_SAMESITE = "None"
-else:
-    SESSION_COOKIE_SAMESITE = "Lax"
-    CSRF_COOKIE_SAMESITE = "Lax"
+# Important: DON’T SET SESSION_COOKIE_DOMAIN (especially on Heroku)
+SESSION_COOKIE_DOMAIN = None
 
-# --------------------------------------------
-# 🔐 Allauth & Social Login Settings
-# --------------------------------------------
+# For modern browsers and cross-domain handling
+SESSION_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
+CSRF_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
+
+# ----------------------------
+# 🔐 dj-rest-auth & allauth
+# ----------------------------
+ACCOUNT_AUTHENTICATION_METHOD = "username"
 ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/"  # Admin Panel handles own redirect
 
 SOCIALACCOUNT_AUTO_SIGNUP = True
-
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
         "APP": {
@@ -211,12 +163,11 @@ SOCIALACCOUNT_PROVIDERS = {
         "SCOPE": ["identify"],
     }
 }
-
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
-# --------------------------------------------
-# 🌐 CORS & CSRF Trusted Origins
-# --------------------------------------------
+# ----------------------------
+# 🌐 CORS & CSRF
+# ----------------------------
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = ["https://api.igoultra.de"]
     CSRF_TRUSTED_ORIGINS = ["https://api.igoultra.de"]
@@ -230,7 +181,7 @@ else:
         "http://localhost:8001",
     ]
 
-# --------------------------------------------
-# 📧 Email Backend (for development)
-# --------------------------------------------
+# ----------------------------
+# 📧 Email backend (disabled)
+# ----------------------------
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
