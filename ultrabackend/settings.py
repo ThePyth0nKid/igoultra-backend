@@ -38,6 +38,10 @@ SITE_ID = 1
 # --------------------------------------------
 USE_HTTPS = os.getenv("USE_HTTPS", "False") == "True"
 
+# Trust Heroku proxy for SSL
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
 # --------------------------------------------
 # 🧩 Installed Applications
 # --------------------------------------------
