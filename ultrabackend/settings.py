@@ -116,7 +116,7 @@ TEMPLATES = [
 # --------------------------------------------
 # 🛢️ PostgreSQL Database Configuration
 # --------------------------------------------
-raw_url = os.getenv("DATABASE_URL_LOCAL")
+raw_url = os.getenv("DATABASE_URL_LOCAL") or os.getenv("DATABASE_URL")
 clean_url = raw_url.encode("utf-8", "ignore").decode("utf-8") if raw_url else None
 
 DATABASES = {
