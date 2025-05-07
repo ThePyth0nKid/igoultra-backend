@@ -2,9 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-# --------------------------------------
-# Custom User Model for iGoUltra
-# --------------------------------------
 
 class User(AbstractUser):
     """
@@ -12,50 +9,61 @@ class User(AbstractUser):
     - Uses Discord for authentication (OAuth2)
     - Username is not necessarily the Discord name
     - Email is optional and not required for login
-    - No password is set manually (OAuth-only)
+    - No password is set manually (OAuth-only flows), but kept for superuser creation
     """
-
-    # Discord ID (used as unique external identifier)
+    # Discord ID: unique identifier from Discord
     discord_id = models.CharField(
         max_length=64,
         unique=True,
         null=True,
         blank=True,
-        help_text=_("Unique ID from the user's Discord account"),
+        help_text=_('Unique ID from the user\'s Discord account'),
     )
 
-    # In-game display name (separate from Discord name)
+    # In-game display name: chosen by user after initial login
     ultra_name = models.CharField(
         max_length=50,
         unique=True,
-        help_text=_("In-game character name chosen by the user"),
+        null=True,
+        blank=True,
+        help_text=_('In-game character name chosen by the user'),
     )
 
-    # XP system
-    xp = models.PositiveIntegerField(default=0)
-    level = models.PositiveIntegerField(default=1)
+    # XP system fields
+    xp = models.PositiveIntegerField(
+        default=0,
+        help_text=_('Total experience points of the user'),
+    )
+    level = models.PositiveIntegerField(
+        default=1,
+        help_text=_('Current level based on experience'),
+    )
     rank = models.CharField(
         max_length=30,
-        default="Unranked",
-        help_text=_("Dynamic rank name based on XP and season"),
+        default='Unranked',
+        help_text=_('Dynamic rank name based on XP and season'),
     )
 
-    # Future avatar placeholder (customizable by AI later)
+    # Future avatar URL placeholder
     avatar_url = models.URLField(
         blank=True,
         null=True,
-        help_text=_("Optional avatar image or generated artwork"),
+        help_text=_('Optional avatar image or generated artwork URL'),
     )
 
-    # Optional email (not used for login)
+    # Optional email for communication or recovery
     email = models.EmailField(
         blank=True,
         null=True,
-        help_text=_("Optional email for communication or recovery"),
+        help_text=_('Optional email address for contact or recovery'),
     )
 
-    REQUIRED_FIELDS = ["ultra_name"]
-    USERNAME_FIELD = "username"
+    # No additional required fields; superuser will use username
+    REQUIRED_FIELDS = []
+    USERNAME_FIELD = 'username'
 
     def __str__(self):
-        return f"{self.ultra_name} ({self.username})"
+        """
+        String representation: show ultra_name if set, otherwise username.
+        """
+        return f"{self.ultra_name or self.username}"
