@@ -1,8 +1,7 @@
 # api/v1/auth/urls.py
-
-from django.urls import path
-from .views import ping
+from django.urls import path, include
 
 urlpatterns = [
-    path("ping/", ping, name="ping"),
+    path('', include('dj_rest_auth.urls')),
+    path('registration/', include('dj_rest_auth.registration.urls')),
 ]

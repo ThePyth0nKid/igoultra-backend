@@ -14,22 +14,17 @@ load_dotenv()
 # --------------------------------------------
 # 📁 Base Directory Setup
 # --------------------------------------------
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # --------------------------------------------
 # 🔐 Secret Key & Debug Mode
 # --------------------------------------------
-
-# Load secret key from environment for security
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-
-# Set debug mode from env, default to False for safety
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
 # --------------------------------------------
 # 🌍 Allowed Hosts
-
+# --------------------------------------------
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
@@ -40,81 +35,79 @@ ALLOWED_HOSTS = [
 
 # --------------------------------------------
 # 🔑 Site Framework
-
+# --------------------------------------------
 SITE_ID = 1
 
 # --------------------------------------------
 # 🧩 Installed Applications
-
+# --------------------------------------------
 INSTALLED_APPS = [
     # Django core apps
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
 
-    # 3rd-party auth (Allauth + Discord)
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.discord',
+    # 3rd-party auth & REST
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.discord",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "rest_framework",
+    "rest_framework.authtoken",
 
-    # REST Auth integration
-    'dj_rest_auth',
-    'dj_rest_auth.registration',
-
-    # Useful dev/production tools
-    'corsheaders',
-    'django_extensions',
-    'rest_framework',
-    'rest_framework.authtoken',
+    # Utilities
+    "corsheaders",
+    "django_extensions",
+    "whitenoise.runserver_nostatic",
 
     # Local apps
-    'users',
-    'xp',
-    'seasons',
+    "users",
+    "xp",
+    "seasons",
 ]
 
 # --------------------------------------------
 # 🧱 Middleware Stack
-
+# --------------------------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-
-    # Whitenoise for static file serving in production
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "users.middleware.EnsureProfileComplete",
+    "allauth.account.middleware.AccountMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 # --------------------------------------------
 # 🔗 URL and WSGI Settings
-
-ROOT_URLCONF = 'ultrabackend.urls'
-WSGI_APPLICATION = 'ultrabackend.wsgi.application'
+# --------------------------------------------
+ROOT_URLCONF = "ultrabackend.urls"
+WSGI_APPLICATION = "ultrabackend.wsgi.application"
 
 # --------------------------------------------
 # 🎨 Templates Configuration
-
+# --------------------------------------------
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Add custom template dirs here if needed
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],  # Add custom template dirs here if needed
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
@@ -122,8 +115,7 @@ TEMPLATES = [
 
 # --------------------------------------------
 # 🛢️ PostgreSQL Database Configuration
-
-# Fix UnicodeDecodeError by cleaning URL if needed
+# --------------------------------------------
 raw_url = os.getenv("DATABASE_URL_LOCAL")
 clean_url = raw_url.encode("utf-8", "ignore").decode("utf-8") if raw_url else None
 
@@ -137,38 +129,97 @@ DATABASES = {
 
 # --------------------------------------------
 # 🔐 Password Validation
-
+# --------------------------------------------
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 # --------------------------------------------
 # 🌐 Localization Settings
-
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+# --------------------------------------------
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------
 # 📦 Static and Media Files Configuration
+# --------------------------------------------
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # --------------------------------------------
 # 🧪 Miscellaneous Settings
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# --------------------------------------------
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --------------------------------------------
 # 👤 Custom User Model
-
+# --------------------------------------------
 AUTH_USER_MODEL = "users.User"
+
+# --------------------------------------------
+# 🚀 Django REST Framework (Session-Only)
+# --------------------------------------------
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+# --------------------------------------------
+# 🛡 Cookie & CSRF Settings for Session Auth
+# --------------------------------------------
+SESSION_COOKIE_SECURE   = True
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE      = True
+CSRF_COOKIE_SAMESITE    = "None"
+
+# --------------------------------------------
+# 🔐 dj-rest-auth & allauth Settings
+# --------------------------------------------
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_EMAIL_REQUIRED        = False
+ACCOUNT_USERNAME_REQUIRED     = True
+ACCOUNT_EMAIL_VERIFICATION    = "optional"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "discord": {
+        "APP": {
+            "client_id": os.getenv("DISCORD_CLIENT_ID"),
+            "secret":    os.getenv("DISCORD_CLIENT_SECRET"),
+            "key":       ""
+        },
+        "SCOPE": ["identify"],
+        "AUTH_PARAMS": {"redirect_uri": os.getenv("DISCORD_REDIRECT_URI")},
+    }
+}
+
+SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
+
+# --------------------------------------------
+# 🌐 CORS Configuration
+# --------------------------------------------
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "https://your-frontend-domain.com",
+]
+
+# --------------------------------------------
+# 🚨 CSRF Trusted Origins
+# --------------------------------------------
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://your-frontend-domain.com",
+]
