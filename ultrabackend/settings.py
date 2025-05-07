@@ -184,7 +184,6 @@ REST_FRAMEWORK = {
 # --------------------------------------------
 SESSION_COOKIE_SECURE = USE_HTTPS
 CSRF_COOKIE_SECURE = USE_HTTPS
-SESSION_COOKIE_DOMAIN = "api.igoultra.de" if USE_HTTPS else None
 
 if USE_HTTPS:
     SESSION_COOKIE_SAMESITE = "None"
