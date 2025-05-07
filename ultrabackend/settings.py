@@ -34,19 +34,18 @@ ALLOWED_HOSTS = [
 SITE_ID = 1
 
 # --------------------------------------------
-# Determine if running over HTTPS (production)
+# 🔒 Heroku SSL Support
 # --------------------------------------------
 USE_HTTPS = os.getenv("USE_HTTPS", "False") == "True"
-
-# Trust Heroku proxy for SSL
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
+SECURE_SSL_REDIRECT = USE_HTTPS  # Redirect all HTTP to HTTPS
 
 # --------------------------------------------
 # 🧩 Installed Applications
 # --------------------------------------------
 INSTALLED_APPS = [
-    # Django core apps
+    # Core Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -55,7 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
 
-    # 3rd-party auth & REST
+    # Third-party apps
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -64,8 +63,6 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "rest_framework",
     "rest_framework.authtoken",
-
-    # Utilities
     "corsheaders",
     "django_extensions",
     "whitenoise.runserver_nostatic",
@@ -94,7 +91,7 @@ MIDDLEWARE = [
 ]
 
 # --------------------------------------------
-# 🔗 URL and WSGI Settings
+# 🔗 URL & WSGI Settings
 # --------------------------------------------
 ROOT_URLCONF = "ultrabackend.urls"
 WSGI_APPLICATION = "ultrabackend.wsgi.application"
@@ -105,7 +102,7 @@ WSGI_APPLICATION = "ultrabackend.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],  # add custom template dirs here
+        "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -118,10 +115,11 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------
-# 🛢️ PostgreSQL Database Configuration
+# 🛢️ Database (PostgreSQL on Heroku)
 # --------------------------------------------
 raw_url = os.getenv("DATABASE_URL_LOCAL") or os.getenv("DATABASE_URL")
 clean_url = raw_url.encode("utf-8", "ignore").decode("utf-8") if raw_url else None
+
 DATABASES = {
     "default": dj_database_url.parse(
         clean_url,
@@ -141,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # --------------------------------------------
-# 🌐 Localization Settings
+# 🌐 Internationalization
 # --------------------------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -149,26 +147,23 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------
-# 📦 Static and Media Files Configuration
+# 📦 Static & Media Files
 # --------------------------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # --------------------------------------------
-# 🧪 Miscellaneous Settings
+# ⚙️ Miscellaneous
 # --------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# --------------------------------------------
-# 👤 Custom User Model
-# --------------------------------------------
 AUTH_USER_MODEL = "users.User"
 
 # --------------------------------------------
-# 🚀 Django REST Framework (Session-Only)
+# 🔐 REST Framework (Session Auth Only)
 # --------------------------------------------
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -180,10 +175,13 @@ REST_FRAMEWORK = {
 }
 
 # --------------------------------------------
-# 🛡 Cookie & CSRF Settings
+# 🍪 Cookie & CSRF Configuration
 # --------------------------------------------
 SESSION_COOKIE_SECURE = USE_HTTPS
 CSRF_COOKIE_SECURE = USE_HTTPS
+SESSION_COOKIE_DOMAIN = "api.igoultra.de" if USE_HTTPS else None
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False  # Required for some JavaScript-based setups
 
 if USE_HTTPS:
     SESSION_COOKIE_SAMESITE = "None"
@@ -193,19 +191,16 @@ else:
     CSRF_COOKIE_SAMESITE = "Lax"
 
 # --------------------------------------------
-# 🔐 dj-rest-auth & allauth Settings
+# 🔐 Allauth & Social Login Settings
 # --------------------------------------------
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
-
 ACCOUNT_AUTHENTICATION_METHOD = "username"
-
-# After login, redirect to site root (middleware will forward as needed)
 LOGIN_REDIRECT_URL = "/"
 
-# Automatically create a user on social login
 SOCIALACCOUNT_AUTO_SIGNUP = True
+
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
         "APP": {
@@ -216,10 +211,11 @@ SOCIALACCOUNT_PROVIDERS = {
         "SCOPE": ["identify"],
     }
 }
+
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
 # --------------------------------------------
-# 🌐 CORS Configuration
+# 🌐 CORS & CSRF Trusted Origins
 # --------------------------------------------
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = ["https://api.igoultra.de"]
@@ -235,6 +231,6 @@ else:
     ]
 
 # --------------------------------------------
-# 🚫 Email Backend (development)
+# 📧 Email Backend (for development)
 # --------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
