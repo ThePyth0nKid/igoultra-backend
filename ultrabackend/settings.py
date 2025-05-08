@@ -26,7 +26,7 @@ SECURE_SSL_REDIRECT = USE_HTTPS
 
 # Installed apps
 INSTALLED_APPS = [
-    "corsheaders",                     # ← ganz oben, damit CORS funktioniert
+    "corsheaders",                     # CORS support
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -58,7 +58,7 @@ SITE_ID = 1
 # Middleware (CORS must be before SessionMiddleware)
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",       # ← direkt nach Security
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -135,15 +135,19 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 🔐 Cookies & CSRF
-SESSION_COOKIE_SECURE = USE_HTTPS
-CSRF_COOKIE_SECURE = USE_HTTPS
-SESSION_COOKIE_DOMAIN = None
-SESSION_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
-CSRF_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
+# 🔐 Cookies & CSRF for cross-domain
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_DOMAIN = ".igoultra.de"
+CSRF_COOKIE_DOMAIN = ".igoultra.de"
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None"
 
 # 🔐 Allauth & Discord Config
-LOGIN_REDIRECT_URL = os.getenv("FRONTEND_LOGIN_REDIRECT", "http://localhost:5173/discord/callback").strip()
+LOGIN_REDIRECT_URL = os.getenv(
+    "FRONTEND_LOGIN_REDIRECT",
+    "http://localhost:5173/discord/callback"
+).strip()
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
@@ -174,15 +178,15 @@ REST_AUTH_SERIALIZERS = {
 CORS_ALLOW_CREDENTIALS = True
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = [
-        "https://app.igoultra.de",      # falls du so hostest
-        "https://www.igoultra.de",      # wichtig: www-Variante
-        "https://igoultra.de",          # optional: ohne www       # ← deine Frontend-Domain
-        "https://api.igoultra.de",       # optional: falls du Frontend und API mischst
+        "https://app.igoultra.de",
+        "https://www.igoultra.de",
+        "https://igoultra.de",
+        "https://api.igoultra.de",
     ]
     CSRF_TRUSTED_ORIGINS = [
-        "https://app.igoultra.de",      # falls du so hostest
-        "https://www.igoultra.de",      # wichtig: www-Variante
-        "https://igoultra.de",          # optional: ohne www
+        "https://app.igoultra.de",
+        "https://www.igoultra.de",
+        "https://igoultra.de",
         "https://api.igoultra.de",
     ]
 else:
