@@ -3,11 +3,23 @@ from django.shortcuts import render, redirect
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.decorators import api_view, permission_classes
 
 from .forms import ProfileCompletionForm
 from .serializers import UserSerializer
+
+
+@ensure_csrf_cookie
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def get_csrf_token(request):
+    """
+    Simple endpoint to set the CSRF cookie for the frontend.
+    """
+    return Response({"detail": "CSRF cookie set"})
 
 
 @login_required
