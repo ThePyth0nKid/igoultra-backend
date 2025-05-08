@@ -174,11 +174,15 @@ REST_AUTH_SERIALIZERS = {
 CORS_ALLOW_CREDENTIALS = True
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = [
-        "https://app.igoultra.de",       # ← deine Frontend-Domain
+        "https://app.igoultra.de",      # falls du so hostest
+        "https://www.igoultra.de",      # wichtig: www-Variante
+        "https://igoultra.de",          # optional: ohne www       # ← deine Frontend-Domain
         "https://api.igoultra.de",       # optional: falls du Frontend und API mischst
     ]
     CSRF_TRUSTED_ORIGINS = [
-        "https://app.igoultra.de",
+        "https://app.igoultra.de",      # falls du so hostest
+        "https://www.igoultra.de",      # wichtig: www-Variante
+        "https://igoultra.de",          # optional: ohne www
         "https://api.igoultra.de",
     ]
 else:
