@@ -55,11 +55,11 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# Middleware (⚠️ CORS must be early, before SessionMiddleware)
+# Middleware (CORS must be before SessionMiddleware)
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",  # ✅ Important!
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -142,7 +142,7 @@ SESSION_COOKIE_DOMAIN = None
 SESSION_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
 CSRF_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
 
-# 🔐 Allauth & Discord
+# 🔐 Allauth & Discord Config
 LOGIN_REDIRECT_URL = os.getenv("FRONTEND_LOGIN_REDIRECT", "http://localhost:5173/discord/callback")
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_PROVIDERS = {
@@ -157,20 +157,21 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
-# ✅ Allauth config (no email required)
-ACCOUNT_SIGNUP_FIELDS = ["username"]
+# ✅ Allauth + Signup without email
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_SIGNUP_FIELDS = ["username"]
 ACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
-# 🔄 dj-rest-auth
+# 🔄 dj-rest-auth serializer config
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
 }
 
 # 🌐 CORS & CSRF
-CORS_ALLOW_CREDENTIALS = True  # ✅ Important for cookies/session!
+CORS_ALLOW_CREDENTIALS = True
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = ["https://api.igoultra.de"]
     CSRF_TRUSTED_ORIGINS = ["https://api.igoultra.de"]
@@ -184,5 +185,5 @@ else:
         "http://localhost:8001",
     ]
 
-# 📧 Email (Dummy backend)
+# 📧 Dummy Email Backend
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"

@@ -1,11 +1,6 @@
-# users/urls.py
 from django.urls import path
-from .views import complete_profile
+from .views import MeView
 
 urlpatterns = [
-    path(
-        "complete-profile/",
-        complete_profile,
-        name="complete_profile"   # <-- hier sitzt der Name
-    ),
+    path("me/", MeView.as_view(), name="custom_me_view"),
 ]
