@@ -19,12 +19,12 @@ ALLOWED_HOSTS = [
     "igoultra-backend-d20b10508b97.herokuapp.com",
 ]
 
-# Trust Heroku proxy headers
+# Proxy & HTTPS Settings
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 SECURE_SSL_REDIRECT = USE_HTTPS
 
-# Apps
+# Installed apps
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+
+    # Third-party
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -44,6 +46,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
     "whitenoise.runserver_nostatic",
+
+    # Local apps
     "users",
     "xp",
     "seasons",
@@ -51,15 +55,15 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+# Middleware (⚠️ CORS must be early, before SessionMiddleware)
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # ✅ Important!
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "users.middleware.EnsureProfileComplete",
     "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -68,6 +72,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "ultrabackend.urls"
 WSGI_APPLICATION = "ultrabackend.wsgi.application"
 
+# Templates
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -94,9 +99,10 @@ DATABASES = {
     )
 }
 
+# Custom User Model
 AUTH_USER_MODEL = "users.User"
 
-# REST Framework (Session only)
+# REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
@@ -106,7 +112,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Passwords
+# Password Validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -114,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Language & Time
+# Localization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
@@ -129,29 +135,15 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ----------------------------
-# 🔐 Cookie & CSRF Settings
-# ----------------------------
+# 🔐 Cookies & CSRF
 SESSION_COOKIE_SECURE = USE_HTTPS
 CSRF_COOKIE_SECURE = USE_HTTPS
-
-# Important: DON’T SET SESSION_COOKIE_DOMAIN (especially on Heroku)
 SESSION_COOKIE_DOMAIN = None
-
-# For modern browsers and cross-domain handling
 SESSION_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
 CSRF_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
 
-# ----------------------------
-# 🔐 dj-rest-auth & allauth
-# ----------------------------
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
-SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
-LOGIN_REDIRECT_URL = "/"  # Admin Panel handles own redirect
-
+# 🔐 Allauth & Discord
+LOGIN_REDIRECT_URL = os.getenv("FRONTEND_LOGIN_REDIRECT", "http://localhost:5173/discord/callback")
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
@@ -165,16 +157,20 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
-# ----------------------------
-# 🔄 Custom Serializers
-# ----------------------------
+# ✅ Allauth config (no email required)
+ACCOUNT_SIGNUP_FIELDS = ["username"]
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+
+# 🔄 dj-rest-auth
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
 }
 
-# ----------------------------
 # 🌐 CORS & CSRF
-# ----------------------------
+CORS_ALLOW_CREDENTIALS = True  # ✅ Important for cookies/session!
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = ["https://api.igoultra.de"]
     CSRF_TRUSTED_ORIGINS = ["https://api.igoultra.de"]
@@ -188,7 +184,5 @@ else:
         "http://localhost:8001",
     ]
 
-# ----------------------------
-# 📧 Email backend (disabled)
-# ----------------------------
+# 📧 Email (Dummy backend)
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
