@@ -166,6 +166,13 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
 # ----------------------------
+# 🔄 Custom Serializers
+# ----------------------------
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
+}
+
+# ----------------------------
 # 🌐 CORS & CSRF
 # ----------------------------
 if USE_HTTPS:
