@@ -26,6 +26,7 @@ SECURE_SSL_REDIRECT = USE_HTTPS
 
 # Installed apps
 INSTALLED_APPS = [
+    "corsheaders",                     # ← ganz oben, damit CORS funktioniert
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,7 +44,6 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "rest_framework",
     "rest_framework.authtoken",
-    "corsheaders",
     "django_extensions",
     "whitenoise.runserver_nostatic",
 
@@ -58,8 +58,8 @@ SITE_ID = 1
 # Middleware (CORS must be before SessionMiddleware)
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",       # ← direkt nach Security
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -143,7 +143,7 @@ SESSION_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
 CSRF_COOKIE_SAMESITE = "None" if USE_HTTPS else "Lax"
 
 # 🔐 Allauth & Discord Config
-LOGIN_REDIRECT_URL = os.getenv("FRONTEND_LOGIN_REDIRECT", "http://localhost:5173/discord/callback")
+LOGIN_REDIRECT_URL = os.getenv("FRONTEND_LOGIN_REDIRECT", "http://localhost:5173/discord/callback").strip()
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
@@ -173,8 +173,14 @@ REST_AUTH_SERIALIZERS = {
 # 🌐 CORS & CSRF
 CORS_ALLOW_CREDENTIALS = True
 if USE_HTTPS:
-    CORS_ALLOWED_ORIGINS = ["https://api.igoultra.de"]
-    CSRF_TRUSTED_ORIGINS = ["https://api.igoultra.de"]
+    CORS_ALLOWED_ORIGINS = [
+        "https://app.igoultra.de",       # ← deine Frontend-Domain
+        "https://api.igoultra.de",       # optional: falls du Frontend und API mischst
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        "https://app.igoultra.de",
+        "https://api.igoultra.de",
+    ]
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:5173",
