@@ -7,6 +7,7 @@ from pathlib import Path
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 USE_HTTPS = os.getenv("USE_HTTPS", "False") == "True"
@@ -76,7 +77,7 @@ WSGI_APPLICATION = "ultrabackend.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [],  # hier ggf. eigene Template-Pfade
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -90,7 +91,11 @@ TEMPLATES = [
 
 # Database
 raw_url = os.getenv("DATABASE_URL_LOCAL") or os.getenv("DATABASE_URL")
-clean_url = raw_url.encode("utf-8", "ignore").decode("utf-8") if raw_url else None
+if not raw_url:
+    raise RuntimeError("❌ DATABASE_URL_LOCAL or DATABASE_URL is missing in your .env file")
+
+clean_url = raw_url  # bereits String, kein extra Encoding nötig
+
 DATABASES = {
     "default": dj_database_url.parse(
         clean_url,
@@ -130,24 +135,41 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# 🔐 Cookies & CSRF for cross-domain
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_DOMAIN = ".igoultra.de"
-CSRF_COOKIE_DOMAIN = ".igoultra.de"
-SESSION_COOKIE_SAMESITE = "None"
-CSRF_COOKIE_SAMESITE = "None"
+# -----------------------------------------------------------------------------
+# Cookies & CSRF: nur in Production sichere Cross-Domain-Cookies setzen,
+# lokal bleibt alles bei den Django-Defaults (Secure=False, SameSite=Lax).
+# -----------------------------------------------------------------------------
+if not DEBUG:
+    SESSION_COOKIE_SECURE   = True
+    CSRF_COOKIE_SECURE      = True
 
-# 🔐 Allauth & Discord Config
+    SESSION_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_SAMESITE    = "None"
+
+    SESSION_COOKIE_DOMAIN   = ".igoultra.de"
+    CSRF_COOKIE_DOMAIN      = ".igoultra.de"
+
+    CSRF_TRUSTED_ORIGINS = [
+        "https://api.igoultra.de",
+    ]
+else:
+    # Lokal: kein Override, Django-Defaults verwenden
+    pass
+
+# -----------------------------------------------------------------------------
+# Allauth & Discord Config
+# -----------------------------------------------------------------------------
 LOGIN_REDIRECT_URL = os.getenv(
     "FRONTEND_LOGIN_REDIRECT",
     "http://localhost:5173/discord/callback"
 ).strip()
+
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_PROVIDERS = {
     "discord": {
@@ -161,20 +183,22 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
-# ✅ Allauth + Signup without email
-ACCOUNT_USERNAME_REQUIRED = True
-ACCOUNT_EMAIL_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = "username"
-ACCOUNT_SIGNUP_FIELDS = ["username"]
-ACCOUNT_EMAIL_VERIFICATION = "none"
+# Allauth ohne E-Mail
+ACCOUNT_USERNAME_REQUIRED        = True
+ACCOUNT_EMAIL_REQUIRED           = False
+ACCOUNT_AUTHENTICATION_METHOD    = "username"
+ACCOUNT_SIGNUP_FIELDS            = ["username"]
+ACCOUNT_EMAIL_VERIFICATION       = "none"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
-# 🔄 dj-rest-auth serializer config
+# dj-rest-auth Serializer
 REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
 }
 
-# 🌐 CORS & CSRF
+# -----------------------------------------------------------------------------
+# CORS & CSRF für API-Zugriffe
+# -----------------------------------------------------------------------------
 CORS_ALLOW_CREDENTIALS = True
 if USE_HTTPS:
     CORS_ALLOWED_ORIGINS = [
@@ -183,21 +207,13 @@ if USE_HTTPS:
         "https://igoultra.de",
         "https://api.igoultra.de",
     ]
-    CSRF_TRUSTED_ORIGINS = [
-        "https://app.igoultra.de",
-        "https://www.igoultra.de",
-        "https://igoultra.de",
-        "https://api.igoultra.de",
-    ]
+    CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://localhost:5173",
         "http://localhost:8001",
     ]
-    CSRF_TRUSTED_ORIGINS = [
-        "http://localhost:5173",
-        "http://localhost:8001",
-    ]
+    CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
-# 📧 Dummy Email Backend
+# Dummy E-Mail Backend (kein echter Versand)
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
