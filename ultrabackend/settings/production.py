@@ -4,6 +4,8 @@ import os
 # ─── Production settings ────────────────────────────────────────────────────
 DEBUG = False
 USE_HTTPS = True
+# Enable credentialed CORS
+CORS_ALLOW_CREDENTIALS = True
 
 # ─── Allowed Hosts ──────────────────────────────────────────────────────────
 ALLOWED_HOSTS = [
