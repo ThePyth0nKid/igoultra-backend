@@ -12,5 +12,6 @@ urlpatterns = [
     path("api/v1/", include("api.v1.urls")),
 
     # ✅ Optional: Allauth routes (needed for Discord OAuth flow)
+    path("accounts/discord/", include("allauth.socialaccount.providers.discord.urls")),
     path("accounts/", include("allauth.urls")),
 ]
