@@ -1,11 +1,16 @@
 import os
 from pathlib import Path
+from datetime import timedelta
 
 import dj_database_url
 from dotenv import load_dotenv
 
-# ─── Load environment variables from .env file ──────────────────────────────
+# ─── Load environment variables ───────────────────────────────────────────────
 load_dotenv()
+
+# ─── Tell dj-rest-auth to use JWT only (no DRF Token model) ──────────────────
+REST_USE_JWT = True
+TOKEN_MODEL = None
 
 # ─── Discord OAuth Credentials & Frontend Redirect ──────────────────────────
 DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
@@ -14,31 +19,28 @@ FRONTEND_LOGIN_REDIRECT = os.getenv(
     "FRONTEND_LOGIN_REDIRECT",
     "http://localhost:5173/discord/callback"
 ).strip()
-
-# Validate presence of critical settings
 if not DISCORD_CLIENT_ID or not DISCORD_CLIENT_SECRET:
     raise RuntimeError(
         "❌ Please set DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET in your .env"
     )
 
-# ─── BASE_DIR & Secret Key ──────────────────────────────────────────────────
+# ─── Base directory & secret key ─────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-# ─── Feature flags (override in local/prod) ────────────────────────────────
+# ─── Feature flags (override in local/prod) ─────────────────────────────────
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 USE_HTTPS = os.getenv("USE_HTTPS", "False") == "True"
 
-# ─── Hosts & CORS defaults (override per environment) ───────────────────────
-ALLOWED_HOSTS = []  
+# ─── Hosts & CORS defaults (override per environment) ────────────────────────
+ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = []
 CSRF_TRUSTED_ORIGINS = []
 
-# ─── Installed Applications ─────────────────────────────────────────────────
+# ─── Installed applications ─────────────────────────────────────────────────
 INSTALLED_APPS = [
-    # CORS & static file handling
-    "corsheaders",
-    "whitenoise.runserver_nostatic",
+    "corsheaders",                      # must come before CommonMiddleware
+    "whitenoise.runserver_nostatic",    # static file serving
 
     # Django core
     "django.contrib.admin",
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "rest_framework",
     "rest_framework.authtoken",
+    "rest_framework_simplejwt.token_blacklist",
 
     # Developer utilities
     "django_extensions",
@@ -70,19 +73,19 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-# ─── Middleware ────────────────────────────────────────────────────────────
+# ─── Middleware ──────────────────────────────────────────────────────────────
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
 
+    # Sessions & CSRF for Admin; API uses JWT only
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -90,15 +93,15 @@ MIDDLEWARE = [
 ROOT_URLCONF = "ultrabackend.urls"
 WSGI_APPLICATION = "ultrabackend.wsgi.application"
 
-# ─── Templates ─────────────────────────────────────────────────────────────
+# ─── Templates configuration ─────────────────────────────────────────────────
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],  # add project-wide template dirs here
+        "DIRS": [],  # project-wide template dirs
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
-                "django.template.context_processors.request",
+                "django.template.context_processors.request",  # for admin & allauth
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
@@ -106,12 +109,10 @@ TEMPLATES = [
     },
 ]
 
-# ─── Database Configuration ─────────────────────────────────────────────────
+# ─── Database configuration ──────────────────────────────────────────────────
 raw_db_url = os.getenv("DATABASE_URL_LOCAL") or os.getenv("DATABASE_URL")
 if not raw_db_url:
     raise RuntimeError("DATABASE_URL_LOCAL or DATABASE_URL must be set")
-
-# Strip any non-UTF8 bytes (e.g. BOM) so psycopg2 can parse correctly
 clean_db_url = raw_db_url.encode("utf-8", "ignore").decode("utf-8")
 DATABASES = {
     "default": dj_database_url.parse(
@@ -121,18 +122,29 @@ DATABASES = {
     )
 }
 
-# ─── Authentication & REST Framework ────────────────────────────────────────
+# ─── Custom user model ───────────────────────────────────────────────────────
 AUTH_USER_MODEL = "users.User"
+
+# ─── REST Framework: JWT authentication only for API ─────────────────────────
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
-# ─── Password Validation ───────────────────────────────────────────────────
+# ─── Simple JWT settings ─────────────────────────────────────────────────────
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),       # short-lived access tokens
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),      # longer-lived refresh tokens
+    "ROTATE_REFRESH_TOKENS": True,                    # rotate & blacklist on use
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),                 # Authorization: Bearer <token>
+}
+
+# ─── Password validation ─────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -140,35 +152,33 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ─── Internationalization ──────────────────────────────────────────────────
+# ─── Internationalization ────────────────────────────────────────────────────
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ─── Static & Media Files ──────────────────────────────────────────────────
+# ─── Static & media files ────────────────────────────────────────────────────
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ─── Session & CSRF (defaults, overridden per env) ─────────────────────────
+# ─── Session & CSRF defaults (overridden in local.py & production.py) ────────
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = "None"
 CSRF_COOKIE_SAMESITE = "None"
 
-# ─── Allauth & Discord OAuth Configuration ─────────────────────────────────
+# ─── Allauth & Discord OAuth configuration ──────────────────────────────────
 SOCIALACCOUNT_AUTO_SIGNUP = True
-tSocialaccount_providers = {
+SOCIALACCOUNT_PROVIDERS = {
     "discord": {
         "APP": {
-            "client_id": os.getenv("DISCORD_CLIENT_ID"),
-            "secret": os.getenv("DISCORD_CLIENT_SECRET"),
+            "client_id": DISCORD_CLIENT_ID,
+            "secret": DISCORD_CLIENT_SECRET,
             "key": ""
         },
         "SCOPE": ["identify"],
@@ -176,7 +186,7 @@ tSocialaccount_providers = {
 }
 SOCIALACCOUNT_ADAPTER = "users.adapters.DiscordSocialAdapter"
 
-# ─── Allauth Signup Settings ───────────────────────────────────────────────
+# ─── Allauth signup settings ─────────────────────────────────────────────────
 ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "username"
@@ -184,10 +194,11 @@ ACCOUNT_SIGNUP_FIELDS = ["username"]
 ACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
-# ─── dj-rest-auth Serializers Override ─────────────────────────────────────
+# ─── dj-rest-auth serializers override ───────────────────────────────────────
 REST_AUTH_SERIALIZERS = {
+    "SOCIAL_LOGIN_SERIALIZER": "users.serializers.DiscordJWTSerializer",
     "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
 }
 
-# ─── Email Backend (can be overridden in prod) ──────────────────────────────
+# ─── Email backend (dummy by default) ────────────────────────────────────────
 EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
