@@ -3,6 +3,7 @@
 from django.urls import path, include
 from users.views import get_csrf_token
 from users.views import MeView
+from .views import DiscordCallbackView
 
 urlpatterns = [
     # 🔐 CSRF cookie setter
@@ -14,4 +15,6 @@ urlpatterns = [
 
     # current-user endpoint
     path("me/", MeView.as_view(), name="custom_me_view"),
+    
+    path("discord/callback/", DiscordCallbackView.as_view(), name="discord-callback"),
 ]

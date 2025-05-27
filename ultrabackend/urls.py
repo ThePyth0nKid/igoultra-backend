@@ -6,6 +6,8 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     
+    path("api/v1/auth/", include("api.v1.auth.urls")),
+    
     path("users/", include("users.urls")),
 
     # ✅ Versioned API routing

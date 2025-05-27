@@ -7,6 +7,20 @@ from dotenv import load_dotenv
 # ─── Load environment variables from .env file ──────────────────────────────
 load_dotenv()
 
+# ─── Discord OAuth Credentials & Frontend Redirect ──────────────────────────
+DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
+DISCORD_CLIENT_SECRET = os.getenv("DISCORD_CLIENT_SECRET")
+FRONTEND_LOGIN_REDIRECT = os.getenv(
+    "FRONTEND_LOGIN_REDIRECT",
+    "http://localhost:5173/discord/callback"
+).strip()
+
+# Validate presence of critical settings
+if not DISCORD_CLIENT_ID or not DISCORD_CLIENT_SECRET:
+    raise RuntimeError(
+        "❌ Please set DISCORD_CLIENT_ID and DISCORD_CLIENT_SECRET in your .env"
+    )
+
 # ─── BASE_DIR & Secret Key ──────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
@@ -149,12 +163,8 @@ SESSION_COOKIE_SAMESITE = "None"
 CSRF_COOKIE_SAMESITE = "None"
 
 # ─── Allauth & Discord OAuth Configuration ─────────────────────────────────
-LOGIN_REDIRECT_URL = os.getenv(
-    "FRONTEND_LOGIN_REDIRECT",
-    "http://localhost:5173/discord/callback"
-).strip()
 SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_PROVIDERS = {
+tSocialaccount_providers = {
     "discord": {
         "APP": {
             "client_id": os.getenv("DISCORD_CLIENT_ID"),
