@@ -1,0 +1,673 @@
+[
+  {
+    "model": "xp.xptype",
+    "pk": 1,
+    "fields": {
+      "key": "step",
+      "display_name": "Schritte",
+      "xp_amount": 0.2,
+      "unit": "count",
+      "description": "1 Schritt = 0,2 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 2,
+    "fields": {
+      "key": "walk_km",
+      "display_name": "Gehen (1 km)",
+      "xp_amount": 200,
+      "unit": "distance_km",
+      "description": "1 km Gehen = 200 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 3,
+    "fields": {
+      "key": "run_km",
+      "display_name": "Joggen (1 km)",
+      "xp_amount": 300,
+      "unit": "distance_km",
+      "description": "1 km Joggen = 300 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 4,
+    "fields": {
+      "key": "sprint_km",
+      "display_name": "Sprint (1 km)",
+      "xp_amount": 1000,
+      "unit": "distance_km",
+      "description": "1 km Sprinten = 1 000 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 5,
+    "fields": {
+      "key": "bike_km",
+      "display_name": "Radfahren (1 km)",
+      "xp_amount": 150,
+      "unit": "distance_km",
+      "description": "1 km Radfahren = 150 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 6,
+    "fields": {
+      "key": "swim_km",
+      "display_name": "Schwimmen (1 km)",
+      "xp_amount": 500,
+      "unit": "distance_km",
+      "description": "1 km Schwimmen = 500 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 7,
+    "fields": {
+      "key": "pushup_standard",
+      "display_name": "Push-Up",
+      "xp_amount": 10,
+      "unit": "repetition",
+      "description": "1 Push-Up = 10 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 8,
+    "fields": {
+      "key": "pushup_diamond",
+      "display_name": "Diamond Push-Up",
+      "xp_amount": 15,
+      "unit": "repetition",
+      "description": "1 Diamond Push-Up = 15 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 9,
+    "fields": {
+      "key": "pushup_wide",
+      "display_name": "Wide Push-Up",
+      "xp_amount": 10,
+      "unit": "repetition",
+      "description": "1 Wide Push-Up (breiter Griff) = 10 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 10,
+    "fields": {
+      "key": "pushup_close",
+      "display_name": "Close-Grip Push-Up",
+      "xp_amount": 15,
+      "unit": "repetition",
+      "description": "1 Close-Grip Push-Up = 15 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 11,
+    "fields": {
+      "key": "pushup_explosive",
+      "display_name": "Explosiver Push-Up",
+      "xp_amount": 15,
+      "unit": "repetition",
+      "description": "1 Explosiver Push-Up = 15 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 12,
+    "fields": {
+      "key": "pushup_archer",
+      "display_name": "Archer Push-Up",
+      "xp_amount": 15,
+      "unit": "repetition",
+      "description": "1 Archer Push-Up = 15 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 13,
+    "fields": {
+      "key": "pushup_one_arm",
+      "display_name": "Einarmiger Push-Up",
+      "xp_amount": 30,
+      "unit": "repetition",
+      "description": "1 Einarmiger Push-Up = 30 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 14,
+    "fields": {
+      "key": "pushup_handstand",
+      "display_name": "Handstand Push-Up",
+      "xp_amount": 50,
+      "unit": "repetition",
+      "description": "1 Handstand Push-Up = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 15,
+    "fields": {
+      "key": "pushup_hindu",
+      "display_name": "Hindu Push-Up",
+      "xp_amount": 20,
+      "unit": "repetition",
+      "description": "1 Hindu Push-Up = 20 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 16,
+    "fields": {
+      "key": "pushup_planche",
+      "display_name": "Planche Push-Up",
+      "xp_amount": 100,
+      "unit": "repetition",
+      "description": "1 Planche Push-Up = 100 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 17,
+    "fields": {
+      "key": "pullup_standard",
+      "display_name": "Pull-Up",
+      "xp_amount": 20,
+      "unit": "repetition",
+      "description": "1 Pull-Up = 20 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 18,
+    "fields": {
+      "key": "pullup_archer",
+      "display_name": "Archer Pull-Up",
+      "xp_amount": 25,
+      "unit": "repetition",
+      "description": "1 Archer Pull-Up = 25 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 19,
+    "fields": {
+      "key": "pullup_wide",
+      "display_name": "Wide Pull-Up",
+      "xp_amount": 20,
+      "unit": "repetition",
+      "description": "1 Wide Pull-Up = 20 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 20,
+    "fields": {
+      "key": "pullup_close",
+      "display_name": "Close-Grip Pull-Up",
+      "xp_amount": 25,
+      "unit": "repetition",
+      "description": "1 Close-Grip Pull-Up = 25 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 21,
+    "fields": {
+      "key": "pullup_one_arm",
+      "display_name": "Einarmiger Klimmzug",
+      "xp_amount": 40,
+      "unit": "repetition",
+      "description": "1 Einarmiger Klimmzug = 40 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 22,
+    "fields": {
+      "key": "pullup_explosive",
+      "display_name": "Explosiver Pull-Up",
+      "xp_amount": 50,
+      "unit": "repetition",
+      "description": "1 Explosiver Pull-Up = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 23,
+    "fields": {
+      "key": "pullup_muscleup",
+      "display_name": "Muscle-Up",
+      "xp_amount": 75,
+      "unit": "repetition",
+      "description": "1 Muscle-Up = 75 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 24,
+    "fields": {
+      "key": "pullup_l_sit",
+      "display_name": "L-Sit Pull-Up",
+      "xp_amount": 30,
+      "unit": "repetition",
+      "description": "1 L-Sit Pull-Up = 30 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 25,
+    "fields": {
+      "key": "pullup_front_lever",
+      "display_name": "Front Lever Pull-Up",
+      "xp_amount": 100,
+      "unit": "repetition",
+      "description": "1 Front Lever Pull-Up = 100 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 26,
+    "fields": {
+      "key": "squat_standard",
+      "display_name": "Kniebeuge",
+      "xp_amount": 10,
+      "unit": "repetition",
+      "description": "1 Kniebeuge = 10 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 27,
+    "fields": {
+      "key": "squat_bulgarian",
+      "display_name": "Bulgarian Split Squat",
+      "xp_amount": 15,
+      "unit": "repetition",
+      "description": "1 Bulgarian Split Squat = 15 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 28,
+    "fields": {
+      "key": "squat_jump",
+      "display_name": "Jump Squat",
+      "xp_amount": 15,
+      "unit": "repetition",
+      "description": "1 Jump Squat = 15 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 29,
+    "fields": {
+      "key": "squat_pistol",
+      "display_name": "Pistol Squat",
+      "xp_amount": 30,
+      "unit": "repetition",
+      "description": "1 Pistol Squat = 30 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 30,
+    "fields": {
+      "key": "squat_sissy",
+      "display_name": "Sissy Squat",
+      "xp_amount": 25,
+      "unit": "repetition",
+      "description": "1 Sissy Squat = 25 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 31,
+    "fields": {
+      "key": "squat_wall_sit",
+      "display_name": "Wall Sit (30 s)",
+      "xp_amount": 50,
+      "unit": "time_second",
+      "description": "Wall Sit für 30 Sekunden = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 32,
+    "fields": {
+      "key": "squat_shrimp",
+      "display_name": "Shrimp Squat",
+      "xp_amount": 40,
+      "unit": "repetition",
+      "description": "1 Shrimp Squat = 40 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 33,
+    "fields": {
+      "key": "hanging_leg_raise",
+      "display_name": "Hanging Leg Raise",
+      "xp_amount": 10,
+      "unit": "repetition",
+      "description": "1 Hanging Leg Raise = 10 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 34,
+    "fields": {
+      "key": "toes_to_bar",
+      "display_name": "Toes-to-Bar",
+      "xp_amount": 20,
+      "unit": "repetition",
+      "description": "1 Toes-to-Bar = 20 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 35,
+    "fields": {
+      "key": "plank_30s",
+      "display_name": "Plank (30 s)",
+      "xp_amount": 50,
+      "unit": "time_second",
+      "description": "Plank für 30 Sekunden = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 36,
+    "fields": {
+      "key": "side_plank_30s",
+      "display_name": "Side Plank (30 s)",
+      "xp_amount": 50,
+      "unit": "time_second",
+      "description": "Side Plank für 30 Sekunden = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 37,
+    "fields": {
+      "key": "dragon_flag",
+      "display_name": "Dragon Flag",
+      "xp_amount": 100,
+      "unit": "repetition",
+      "description": "1 Dragon Flag = 100 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 38,
+    "fields": {
+      "key": "l_sit_10s",
+      "display_name": "L-Sit (10 s)",
+      "xp_amount": 50,
+      "unit": "time_second",
+      "description": "L-Sit pro 10 Sekunden = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 39,
+    "fields": {
+      "key": "handstand_10s",
+      "display_name": "Handstand (10 s)",
+      "xp_amount": 50,
+      "unit": "time_second",
+      "description": "Handstand für 10 Sekunden = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 40,
+    "fields": {
+      "key": "wall_handstand_30s",
+      "display_name": "Wall Handstand (30 s)",
+      "xp_amount": 50,
+      "unit": "time_second",
+      "description": "Wall Handstand für 30 Sekunden = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 41,
+    "fields": {
+      "key": "free_handstand_30s",
+      "display_name": "Freier Handstand (30 s)",
+      "xp_amount": 100,
+      "unit": "time_second",
+      "description": "Freier Handstand für 30 Sekunden = 100 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 42,
+    "fields": {
+      "key": "elbow_lever_30s",
+      "display_name": "Elbow Lever (30 s)",
+      "xp_amount": 100,
+      "unit": "time_second",
+      "description": "Elbow Lever für 30 Sekunden = 100 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 43,
+    "fields": {
+      "key": "human_flag_10s",
+      "display_name": "Human Flag (10 s)",
+      "xp_amount": 200,
+      "unit": "time_second",
+      "description": "Human Flag pro 10 Sekunden = 200 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 44,
+    "fields": {
+      "key": "dip_standard",
+      "display_name": "Dip",
+      "xp_amount": 10,
+      "unit": "repetition",
+      "description": "1 Dip = 10 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 45,
+    "fields": {
+      "key": "dip_korean",
+      "display_name": "Korean Dip",
+      "xp_amount": 20,
+      "unit": "repetition",
+      "description": "1 Korean Dip = 20 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 46,
+    "fields": {
+      "key": "dip_explosive",
+      "display_name": "Explosiver Dip",
+      "xp_amount": 30,
+      "unit": "repetition",
+      "description": "1 Explosiver Dip = 30 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 47,
+    "fields": {
+      "key": "dip_weighted",
+      "display_name": "Weighted Dip",
+      "xp_amount": 50,
+      "unit": "repetition",
+      "description": "1 Weighted Dip = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 48,
+    "fields": {
+      "key": "burpee_standard",
+      "display_name": "Burpee",
+      "xp_amount": 20,
+      "unit": "repetition",
+      "description": "1 Burpee = 20 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 49,
+    "fields": {
+      "key": "burpee_explosive",
+      "display_name": "Explosiver Burpee",
+      "xp_amount": 25,
+      "unit": "repetition",
+      "description": "1 Explosiver Burpee = 25 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 50,
+    "fields": {
+      "key": "breath_wim_hof",
+      "display_name": "Wim Hof Atemtechnik",
+      "xp_amount": 1500,
+      "unit": "session",
+      "description": "Wim Hof Atemtechnik = 1 500 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 51,
+    "fields": {
+      "key": "breath_pranayama",
+      "display_name": "Pranayama Atemtechnik",
+      "xp_amount": 1000,
+      "unit": "session",
+      "description": "Pranayama Atemtechnik = 1 000 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 52,
+    "fields": {
+      "key": "breath_other",
+      "display_name": "Andere Atemtechnik",
+      "xp_amount": 500,
+      "unit": "session",
+      "description": "Andere spezifizierte Atemtechniken = 500–1 500 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 53,
+    "fields": {
+      "key": "meditation_10min",
+      "display_name": "Meditation (10 min)",
+      "xp_amount": 1000,
+      "unit": "session",
+      "description": "Meditation (10+ Minuten) = 1 000 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 54,
+    "fields": {
+      "key": "sport_training_90min",
+      "display_name": "Spezialtraining (90 min)",
+      "xp_amount": 2500,
+      "unit": "session",
+      "description": "Kampfsport-/Fußball-Training (90+ Min.) = 2 500 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 55,
+    "fields": {
+      "key": "gym_session_90min",
+      "display_name": "Gym-Session (90 min)",
+      "xp_amount": 1500,
+      "unit": "session",
+      "description": "Gym-Session (1,5 Std.) = 1 500 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 56,
+    "fields": {
+      "key": "bring_sally_up",
+      "display_name": "Bring Sally Up Challenge",
+      "xp_amount": 500,
+      "unit": "challenge",
+      "description": "Bring Sally Up Challenge = 500 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 57,
+    "fields": {
+      "key": "jump_rope_minute",
+      "display_name": "Seilspringen (Minute)",
+      "xp_amount": 100,
+      "unit": "time_minute",
+      "description": "Seilspringen 1 Minute = 100 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 58,
+    "fields": {
+      "key": "shadowboxing_minute",
+      "display_name": "Schattenboxen (Minute)",
+      "xp_amount": 150,
+      "unit": "time_minute",
+      "description": "Schattenboxen 1 Minute = 150 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 59,
+    "fields": {
+      "key": "hula_hoop_minute",
+      "display_name": "Hula-Hoop (Minute)",
+      "xp_amount": 50,
+      "unit": "time_minute",
+      "description": "Hula-Hoop 1 Minute = 50 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 60,
+    "fields": {
+      "key": "meeting_participation",
+      "display_name": "Charakterausarbeitungen",
+      "xp_amount": 5000,
+      "unit": "session",
+      "description": "Teilnahme an Charakterausarbeitungen = 5 000 XP"
+    }
+  },
+  {
+    "model": "xp.xptype",
+    "pk": 61,
+    "fields": {
+      "key": "kids_training_hour",
+      "display_name": "Kindertraining (Stunde)",
+      "xp_amount": 1000,
+      "unit": "time_hour",
+      "description": "Kindertraining pro Stunde = 1 000 XP"
+    }
+  }
+]
