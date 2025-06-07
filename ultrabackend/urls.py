@@ -1,19 +1,54 @@
 # ultrabackend/urls.py
 
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+    # Admin-Interface
     path("admin/", admin.site.urls),
-    
+
+    # Authentication & Social (Discord OAuth + dj-rest-auth)
     path("api/v1/auth/", include("api.v1.auth.urls")),
-    
+
+    # Simple JWT endpoints for obtaining and refreshing JWTs
+    path(
+        "api/v1/auth/jwt/create/",
+        TokenObtainPairView.as_view(),
+        name="jwt-create"
+    ),
+    path(
+        "api/v1/auth/jwt/refresh/",
+        TokenRefreshView.as_view(),
+        name="jwt-refresh"
+    ),
+
+    # Allauth routes (optional; needed for Discord OAuth flow)
+    path("accounts/", include("allauth.urls")),
+
+    # User-Endpoints
     path("users/", include("users.urls")),
 
-    # ✅ Versioned API routing
+    # Versioned API (inkl. XP, Seasons, etc.)
     path("api/v1/", include("api.v1.urls")),
-
-    # ✅ Optional: Allauth routes (needed for Discord OAuth flow)
-    # path("accounts/discord/", include("allauth.socialaccount.providers.discord.urls")),
-    path("accounts/", include("allauth.urls")),
 ]
+
+# Nur im DEBUG-Modus: API-Schema und Swagger-UI
+if settings.DEBUG:
+    from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+    urlpatterns += [
+        # OpenAPI-Schema als JSON/YAML
+        path(
+            "api/schema/",
+            SpectacularAPIView.as_view(),
+            name="schema"
+        ),
+        # Swagger-UI zum interaktiven Testen
+        path(
+            "api/docs/",
+            SpectacularSwaggerView.as_view(url_name="schema"),
+            name="swagger-ui"
+        ),
+    ]

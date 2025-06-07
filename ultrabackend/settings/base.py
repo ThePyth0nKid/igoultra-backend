@@ -62,6 +62,9 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework_simplejwt.token_blacklist",
 
+    # API Documentation
+    "drf_spectacular",
+
     # Developer utilities
     "django_extensions",
 
@@ -133,6 +136,15 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    # Use drf-spectacular for schema generation
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# ─── drf-spectacular settings ────────────────────────────────────────────────
+SPECTACULAR_SETTINGS = {
+    "TITLE":       "iGoUltra API",
+    "DESCRIPTION": "Interaktive API-Dokumentation (nur lokal)",
+    "VERSION":     "1.0.0",
 }
 
 # ─── Simple JWT settings ─────────────────────────────────────────────────────
