@@ -1,13 +1,18 @@
 # xp/services.py
 
 from django.db import transaction
+from django.utils import timezone
+
 from .models import XpEvent, XpType
+from seasons.models import Season, SeasonXp
+
 
 def xp_for_level(n: int) -> int:
     """
     Kumulativ benötigte XP bis Level n.
     """
     return int(100 * n ** 1.5)
+
 
 def level_from_xp(total_xp: int) -> int:
     """
@@ -18,6 +23,7 @@ def level_from_xp(total_xp: int) -> int:
         lvl += 1
     return lvl
 
+
 @transaction.atomic
 def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = None) -> dict:
     """
@@ -26,11 +32,16 @@ def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = No
       2) Berechnet real_xp = amount_units * xp_amount
       3) Speichert XpEvent
       4) Updated user.xp, user.level und user.rank
+      5) Falls eine Season aktiv ist, wird auch SeasonXp upgedatet
     Gibt ein Dict mit total_xp, level, leveled_up und awarded_xp zurück.
     """
+    # 1) XpType holen
     xp_type = XpType.objects.get(key=type_key)
+
+    # 2) reale XP berechnen
     real_xp = int(amount_units * xp_type.xp_amount)
 
+    # 3) XpEvent anlegen
     XpEvent.objects.create(
         user=user,
         amount=real_xp,
@@ -38,7 +49,7 @@ def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = No
         metadata=metadata or {}
     )
 
-    # XP und Level updaten
+    # 4) User XP & Level updaten
     user.xp = max(0, user.xp + real_xp)
     new_level = level_from_xp(user.xp)
     leveled_up = new_level > user.level
@@ -46,12 +57,30 @@ def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = No
     user.rank = f"Level {new_level}"
     user.save(update_fields=['xp', 'level', 'rank'])
 
+    # 5) SeasonXp aktualisieren, falls eine Season aktiv ist
+    today = timezone.now().date()
+    try:
+        season = Season.objects.get(is_active=True,
+                                    start__lte=today,
+                                    end__gt=today)
+    except Season.DoesNotExist:
+        season = None
+
+    if season:
+        sxp, _ = SeasonXp.objects.get_or_create(
+            season=season,
+            user=user
+        )
+        sxp.xp += real_xp
+        sxp.save(update_fields=['xp'])
+
     return {
         'total_xp': user.xp,
         'level': user.level,
         'leveled_up': leveled_up,
         'awarded_xp': real_xp
     }
+
 
 def get_xp_stats(user) -> dict:
     """
