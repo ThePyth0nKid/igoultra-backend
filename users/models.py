@@ -1,6 +1,10 @@
+# users/models.py
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from rankings.constants import REAL_LAYERS, CYBER_LAYERS
 
 
 class User(AbstractUser):
@@ -17,7 +21,7 @@ class User(AbstractUser):
         unique=True,
         null=True,
         blank=True,
-        help_text=_('Unique ID from the user\'s Discord account'),
+        help_text=_("Unique ID from the user's Discord account"),
     )
 
     # In-game display name: chosen by user after initial login
@@ -26,7 +30,7 @@ class User(AbstractUser):
         unique=True,
         null=True,
         blank=True,
-        help_text=_('In-game character name chosen by the user'),
+        help_text=_("In-game character name chosen by the user"),
     )
 
     # XP system fields
@@ -42,6 +46,20 @@ class User(AbstractUser):
         max_length=30,
         default='Unranked',
         help_text=_('Dynamic rank name based on XP and season'),
+    )
+
+    # Layer fields for Season-based ranking
+    real_layer = models.CharField(
+        max_length=20,
+        choices=[(l, l) for l in REAL_LAYERS],
+        default=REAL_LAYERS[0],
+        help_text=_('Current Realitäts-Layer'),
+    )
+    cyber_layer = models.CharField(
+        max_length=20,
+        choices=[(l, l) for l in CYBER_LAYERS],
+        default=CYBER_LAYERS[0],
+        help_text=_('Current Cyber-Layer'),
     )
 
     # Future avatar URL placeholder

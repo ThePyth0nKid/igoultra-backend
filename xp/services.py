@@ -24,6 +24,30 @@ def level_from_xp(total_xp: int) -> int:
     return lvl
 
 
+def get_xp_stats(user) -> dict:
+    """
+    Liefert:
+      - total_xp: die aktuellen XP
+      - level: das berechnete Level
+      - next_level: das nächste Level
+      - next_level_xp: kumulativ benötigte XP für das nächste Level
+      - xp_to_next: wie viele XP noch zum nächsten Level fehlen
+    """
+    total = user.xp
+    level = level_from_xp(total)
+    next_level = level + 1
+    next_level_xp = xp_for_level(next_level)
+    xp_to_next = next_level_xp - total
+
+    return {
+        'total_xp': total,
+        'level': level,
+        'next_level': next_level,
+        'next_level_xp': next_level_xp,
+        'xp_to_next': xp_to_next,
+    }
+
+
 @transaction.atomic
 def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = None) -> dict:
     """
@@ -31,11 +55,18 @@ def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = No
       1) Holt XpType
       2) Berechnet real_xp = amount_units * xp_amount
       3) Speichert XpEvent
-      4) Updated user.xp, user.level und user.rank
+      4) Updated user.xp und user.level
       5) Falls eine Season aktiv ist, wird auch SeasonXp upgedatet
-    Gibt ein Dict mit total_xp, level, leveled_up und awarded_xp zurück.
+    Gibt ein Dict mit den aktuellen Stats und awarded_xp zurück:
+      - total_xp
+      - level
+      - next_level
+      - next_level_xp
+      - xp_to_next
+      - leveled_up (bool)
+      - awarded_xp
     """
-    # 1) XpType holen
+    # 1) XP-Typ holen
     xp_type = XpType.objects.get(key=type_key)
 
     # 2) reale XP berechnen
@@ -49,13 +80,13 @@ def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = No
         metadata=metadata or {}
     )
 
-    # 4) User XP & Level updaten
+    # 4) User XP & Level updaten (ohne rank!)
     user.xp = max(0, user.xp + real_xp)
     new_level = level_from_xp(user.xp)
     leveled_up = new_level > user.level
     user.level = new_level
-    user.rank = f"Level {new_level}"
-    user.save(update_fields=['xp', 'level', 'rank'])
+    # user.rank nicht hier setzen – bleibt für Community-Ränge frei
+    user.save(update_fields=['xp', 'level'])
 
     # 5) SeasonXp aktualisieren, falls eine Season aktiv ist
     today = timezone.now().date()
@@ -74,31 +105,10 @@ def add_xp_to_user(user, type_key: str, amount_units: float, metadata: dict = No
         sxp.xp += real_xp
         sxp.save(update_fields=['xp'])
 
-    return {
-        'total_xp': user.xp,
-        'level': user.level,
+    # 6) Aktuelle XP-Stats holen und erweitern
+    stats = get_xp_stats(user)
+    stats.update({
         'leveled_up': leveled_up,
-        'awarded_xp': real_xp
-    }
-
-
-def get_xp_stats(user) -> dict:
-    """
-    Liefert:
-      - total_xp: die aktuellen XP
-      - level: das berechnete Level
-      - xp_to_next: wie viele XP noch zum nächsten Level fehlen
-      - next_level_xp: kumulativ benötigte XP für das nächste Level
-    """
-    total = user.xp
-    level = level_from_xp(total)
-    next_level = level + 1
-    needed = xp_for_level(next_level) - total
-
-    return {
-        'total_xp': total,
-        'level': level,
-        'next_level': next_level,
-        'next_level_xp': xp_for_level(next_level),
-        'xp_to_next': needed
-    }
+        'awarded_xp': real_xp,
+    })
+    return stats
