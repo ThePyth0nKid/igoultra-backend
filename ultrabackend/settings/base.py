@@ -73,6 +73,14 @@ INSTALLED_APPS = [
     "xp",
     "seasons",
     "rankings",
+    "layers",
+    "stats",
+    "skills",
+    "community_rang",
+    "bitgold",
+    "wallet",
+    "store",
+    "inventory",
 ]
 
 SITE_ID = 1
