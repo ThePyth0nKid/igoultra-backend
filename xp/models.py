@@ -2,6 +2,12 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+LAYER_TYPE_CHOICES = [
+    ('Real-Life', 'Real-Life'),
+    ('Cyber', 'Cyber'),
+    ('Game', 'Game'),
+]
+
 class XpType(models.Model):
     """
     Definiert eine Aktivität, für die XP vergeben werden.
@@ -20,7 +26,6 @@ class XpType(models.Model):
     def __str__(self):
         return f"{self.display_name} ({self.xp_amount} XP/{self.unit})"
 
-
 class XpEvent(models.Model):
     """
     Protokolliert jede XP-Änderung für einen User.
@@ -36,6 +41,12 @@ class XpEvent(models.Model):
     source = models.CharField(
         max_length=50,
         help_text='Identifier, z. B. "pushups", "running"'
+    )
+    layer_type = models.CharField(
+        max_length=20,
+        choices=LAYER_TYPE_CHOICES,
+        default='Real-Life',
+        help_text="Layer, aus dem dieses XP-Event stammt"
     )
     metadata = models.JSONField(
         blank=True, null=True,
