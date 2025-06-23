@@ -1,9 +1,7 @@
 from django.urls import path
-from seasons.views import ActiveSeasonView, SeasonXpView
+from .views import ActiveSeasonView, SeasonRankingView
 
 urlpatterns = [
-    # GET  /api/v1/seasons/active/    → Details der aktiven Season
-    path("active/", ActiveSeasonView.as_view(), name="active-season"),
-    # GET  /api/v1/seasons/active/xp/ → Season-XP des eingeloggten Users
-    path("active/xp/", SeasonXpView.as_view(), name="active-season-xp"),
+    path('active/', ActiveSeasonView.as_view(), name='active-season'),
+    path('<int:season_id>/ranking/<str:layer_type>/', SeasonRankingView.as_view(), name='season-ranking'),
 ]

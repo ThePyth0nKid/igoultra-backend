@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
 from .models import Season, SeasonXp
-from .serializers import SeasonSerializer, SeasonXpSerializer
+from ..api.v1.seasons.serializers import SeasonSerializer, SeasonXpSerializer
 
 class ActiveSeasonView(generics.RetrieveAPIView):
     """
