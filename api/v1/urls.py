@@ -6,4 +6,5 @@ urlpatterns = [
     path("xp/", include("api.v1.xp.urls")),
     path("seasons/", include("api.v1.seasons.urls")),
     path("rankings/", include("api.v1.rankings.urls")),
+    path("layers/", include("layers.urls")),
 ]

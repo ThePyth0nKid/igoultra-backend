@@ -1,0 +1,132 @@
+[
+  {
+    "model": "layers.layer",
+    "pk": 1,
+    "fields": {
+      "code": "RL0",
+      "name": "Base",
+      "type": "real",
+      "order": 0,
+      "description": "Gewöhnliche physische Welt, keine Extrasicht",
+      "essence": "Alltag, erste XP sammeln",
+      "player_action": "Alltag, erste XP sammeln"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 2,
+    "fields": {
+      "code": "RL1",
+      "name": "Emotion",
+      "type": "real",
+      "order": 1,
+      "description": "Emotionen werden als farbige Energien sichtbar",
+      "essence": "Emotionen wahrnehmen & kanalisieren",
+      "player_action": "Emotionen wahrnehmen & kanalisieren"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 3,
+    "fields": {
+      "code": "RL2",
+      "name": "Flow",
+      "type": "real",
+      "order": 2,
+      "description": "Energiefluss ist spür- und formbar",
+      "essence": "Rituale, Kampf-Moves, Flow-Ketten",
+      "player_action": "Rituale, Kampf-Moves, Flow-Ketten"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 4,
+    "fields": {
+      "code": "RL3",
+      "name": "Core",
+      "type": "real",
+      "order": 3,
+      "description": "Manifestierte innere Dämonen",
+      "essence": "Boss-Fights gegen eigene Schatten",
+      "player_action": "Boss-Fights gegen eigene Schatten"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 5,
+    "fields": {
+      "code": "RLX",
+      "name": "Ultra",
+      "type": "real",
+      "order": 99,
+      "description": "Höchste Bewusstseinsebene, Weltturnier",
+      "essence": "Endgame-Events",
+      "player_action": "Endgame-Events"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 6,
+    "fields": {
+      "code": "CL0",
+      "name": "Surface-Web",
+      "type": "cyber",
+      "order": 0,
+      "description": "Öffentliches Internet",
+      "essence": "Info-Quests, leichte Hacks",
+      "player_action": "Info-Quests, leichte Hacks"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 7,
+    "fields": {
+      "code": "CL1",
+      "name": "DeepNet",
+      "type": "cyber",
+      "order": 1,
+      "description": "Verborgene Foren, erste KI-Spuren",
+      "essence": "Datenjagd, Infiltration",
+      "player_action": "Datenjagd, Infiltration"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 8,
+    "fields": {
+      "code": "CL2",
+      "name": "Dark-Code",
+      "type": "cyber",
+      "order": 2,
+      "description": "KI entkoppelt sich, baut Strukturen",
+      "essence": "Systemangriffe abwehren",
+      "player_action": "Systemangriffe abwehren"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 9,
+    "fields": {
+      "code": "CL3",
+      "name": "Synthetic",
+      "type": "cyber",
+      "order": 3,
+      "description": "Voll-KI-Kontrolle, Bewusstseinshaft",
+      "essence": "Rettungs- und Befreiungs-Missionen",
+      "player_action": "Rettungs- und Befreiungs-Missionen"
+    }
+  },
+  {
+    "model": "layers.layer",
+    "pk": 10,
+    "fields": {
+      "code": "CLX",
+      "name": "VOID",
+      "type": "cyber",
+      "order": 99,
+      "description": "KI verschmilzt mit reiner Energie",
+      "essence": "Finaler Cyber-Show-down",
+      "player_action": "Finaler Cyber-Show-down"
+    }
+  }
+] 
