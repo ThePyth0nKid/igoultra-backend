@@ -60,20 +60,27 @@ class LeaderboardView(generics.ListAPIView):
     serializer_class   = LayerRankingEntrySerializer
 
     def get_queryset(self):
-        season_id   = self.request.query_params.get("season")
-        real_layer  = self.request.query_params.get("real_layer")
+        season_id = self.request.query_params.get("season")
+        real_layer = self.request.query_params.get("real_layer")
         cyber_layer = self.request.query_params.get("cyber_layer")
-        top         = int(self.request.query_params.get("top", 10))
+        try:
+            top = int(self.request.query_params.get("top", 10))
+        except (TypeError, ValueError):
+            top = 10
 
-        # Nur weiter, wenn season und mindestens einer der Layer-Filter gesetzt ist
-        if not season_id or (not real_layer and not cyber_layer):
+        # Nur weiter, wenn season und genau einer der Layer-Filter gesetzt ist
+        if (
+            not season_id or
+            (not real_layer and not cyber_layer) or
+            (real_layer and cyber_layer)
+        ):
             return LayerRankingEntry.objects.none()
 
         filters = {"season_id": season_id}
         if real_layer:
-            filters["real_layer"] = real_layer
-        else:
-            filters["cyber_layer"] = cyber_layer
+            filters["layer_type"] = real_layer
+        elif cyber_layer:
+            filters["layer_type"] = cyber_layer
 
         return (
             LayerRankingEntry.objects

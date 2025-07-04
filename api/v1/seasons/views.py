@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from seasons.models import Season, SeasonXp
 from .serializers import SeasonSerializer, SeasonXpSerializer
+from rest_framework import generics
 
 class ActiveSeasonView(APIView):
     """
@@ -26,3 +27,18 @@ class SeasonRankingView(APIView):
         ).order_by('-xp')
         serializer = SeasonXpSerializer(season_xps, many=True)
         return Response(serializer.data)
+
+class SeasonListView(generics.ListAPIView):
+    queryset = Season.objects.all().order_by('-start')
+    serializer_class = SeasonSerializer
+
+class SeasonXpListView(generics.ListAPIView):
+    serializer_class = SeasonXpSerializer
+
+    def get_queryset(self):
+        season_id = self.kwargs['season_id']
+        layer_type = self.request.query_params.get('layer_type')
+        qs = SeasonXp.objects.filter(season_id=season_id)
+        if layer_type:
+            qs = qs.filter(layer_type=layer_type)
+        return qs.order_by('-xp')
