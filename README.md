@@ -7,6 +7,7 @@ Das Projekt verfolgt das Ziel, Bewegung spielerisch zu fördern und virtuelle so
 
 ## 📖 Inhaltsverzeichnis
 - [Features](#features)
+- [🧠 Skills- & XP-System](#skills--xp-system)
 - [Technologie-Stack](#technologie-stack)
 - [Quickstart](#quickstart)
 - [API-Dokumentation](#api-dokumentation)
@@ -25,6 +26,59 @@ Das Projekt verfolgt das Ziel, Bewegung spielerisch zu fördern und virtuelle so
 - **Layer-abhängige Leaderboards** (Real/Cyber)
 - **Swagger UI** für interaktive API-Dokumentation
 - **Erweiterbare Architektur** für künftige Module wie Bitgold, Wallet oder Skills
+
+## 🧠 Skills- & XP-System
+
+Das Skills- und XP-System ist modular, API-basiert und voll funktionsfähig integriert:
+
+### Features & API
+
+- **XP-System:** 4 XP-Typen (Physical, Mental, Cyber, Ultra)
+- **Stats:** 5 Kategorien (Body, Mind, Spirit, Combat, Tech) – werden durch XP automatisch erhöht
+- **Skills:**
+  - Layer: Real/Cyber
+  - Voraussetzungen: Level, XP-Typ, Stats
+  - Freischaltung nur bei erfüllten Anforderungen
+- **REST API:**
+  - `POST   /api/v1/xp/add/`           → XP-Eintrag
+  - `GET    /api/v1/skills/stats/`     → Stat-Übersicht
+  - `GET    /api/v1/skills/`           → Skill-Übersicht
+  - `GET    /api/v1/skills/available/` → Skills mit Freischalt-Status
+  - `GET    /api/v1/skills/unlocked/`  → Freigeschaltete Skills
+  - `POST   /api/v1/skills/unlock/`    → Skill-Freischaltung
+  - `GET    /api/v1/skills/<id>/progress/` → Skill-Fortschritt
+
+### Modularer Aufbau
+
+- **skills/models.py:**
+  - `CharacterStats` (pro User, alle Stats)
+  - `Skill` (mit Layer, Voraussetzungen, Effekten)
+  - `UserSkill` (freigeschaltete Skills)
+- **skills/services.py:**
+  - Stat-Berechnung, Skill-Freischaltung, Progress
+- **skills/serializers.py:**
+  - Serializers für alle API-Objekte
+- **skills/views.py:**
+  - Alle Endpunkte als ViewSets/Generics
+- **skills/urls.py:**
+  - Sauberes Routing, einfach erweiterbar
+
+### Test & Beispiel-Daten
+
+- **Fixtures:**
+  - `skills/fixtures/skills.json` (Beispiel-Skills)
+- **Management-Command:**
+  - `python manage.py test_skills_system`  → Testet XP, Stat-Update, Skill-Freischaltung
+
+### Hinweise
+
+- Skills, Stats, XP-Typen und Logik sind **leicht erweiterbar**.
+- Die API ist **RESTful** und kann direkt im Frontend/Swagger UI getestet werden.
+- Die Stat-Logik ist zentral in `skills/services.py` und kann für komplexere Progression angepasst werden.
+
+**Das System ist bereit für den produktiven Einsatz und für weitere Game-Logik!**
+
+---
 
 ## 🛠 Technologie-Stack
 - **Python 3.13** und **Django 5.2** mit **Django REST Framework**

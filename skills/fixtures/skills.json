@@ -1,0 +1,257 @@
+[
+  {
+    "model": "skills.skill",
+    "pk": 1,
+    "fields": {
+      "name": "Iron Will",
+      "description": "Deine Willenskraft ist unerschütterlich. Du kannst länger durchhalten und bist resistenter gegen mentale Angriffe.",
+      "layer": "Real",
+      "required_level": 5,
+      "required_xp_type": "Physical",
+      "required_xp_amount": 1000,
+      "required_stats": {
+        "willpower": 15,
+        "endurance": 10
+      },
+      "effects": {
+        "willpower_bonus": 5,
+        "endurance_bonus": 3
+      },
+      "category": "Combat",
+      "tier": 1,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 2,
+    "fields": {
+      "name": "Mind Reader",
+      "description": "Du kannst die Gedanken und Emotionen anderer Menschen lesen und verstehen.",
+      "layer": "Real",
+      "required_level": 10,
+      "required_xp_type": "Mental",
+      "required_xp_amount": 2000,
+      "required_stats": {
+        "intelligence": 20,
+        "intuition": 15
+      },
+      "effects": {
+        "intelligence_bonus": 5,
+        "charisma_bonus": 3
+      },
+      "category": "Utility",
+      "tier": 2,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 3,
+    "fields": {
+      "name": "Cyber Hacker",
+      "description": "Du beherrschst die Kunst des Hackens und kannst in digitale Systeme eindringen.",
+      "layer": "Cyber",
+      "required_level": 8,
+      "required_xp_type": "Cyber",
+      "required_xp_amount": 1500,
+      "required_stats": {
+        "hacking": 20,
+        "intelligence": 15
+      },
+      "effects": {
+        "hacking_bonus": 10,
+        "cyber_awareness_bonus": 5
+      },
+      "category": "Tech",
+      "tier": 2,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 4,
+    "fields": {
+      "name": "Shadow Strike",
+      "description": "Du bewegst dich wie ein Schatten und fügst deinen Gegnern tödliche Schläge zu.",
+      "layer": "Real",
+      "required_level": 15,
+      "required_xp_type": "Physical",
+      "required_xp_amount": 5000,
+      "required_stats": {
+        "agility": 25,
+        "combat_skill": 20,
+        "reaction_time": 15
+      },
+      "effects": {
+        "agility_bonus": 8,
+        "combat_skill_bonus": 5,
+        "stealth_bonus": 10
+      },
+      "category": "Combat",
+      "tier": 3,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 5,
+    "fields": {
+      "name": "Digital Ghost",
+      "description": "Du hinterlässt keine Spuren im digitalen Raum und kannst unentdeckt durch das Netz wandern.",
+      "layer": "Cyber",
+      "required_level": 12,
+      "required_xp_type": "Cyber",
+      "required_xp_amount": 3000,
+      "required_stats": {
+        "hacking": 25,
+        "cyber_awareness": 20,
+        "intelligence": 18
+      },
+      "effects": {
+        "hacking_bonus": 15,
+        "cyber_awareness_bonus": 10,
+        "stealth_bonus": 20
+      },
+      "category": "Tech",
+      "tier": 3,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 6,
+    "fields": {
+      "name": "Ultra Instinct",
+      "description": "Deine Reaktionen sind so schnell, dass sie deinem Bewusstsein vorausgehen.",
+      "layer": "Real",
+      "required_level": 20,
+      "required_xp_type": "Ultra",
+      "required_xp_amount": 10000,
+      "required_stats": {
+        "reaction_time": 30,
+        "intuition": 25,
+        "willpower": 20
+      },
+      "effects": {
+        "reaction_time_bonus": 15,
+        "intuition_bonus": 10,
+        "combat_skill_bonus": 8
+      },
+      "category": "Combat",
+      "tier": 4,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 7,
+    "fields": {
+      "name": "Neural Link",
+      "description": "Du kannst direkt mit digitalen Systemen kommunizieren und sie mit deinen Gedanken steuern.",
+      "layer": "Cyber",
+      "required_level": 18,
+      "required_xp_type": "Cyber",
+      "required_xp_amount": 8000,
+      "required_stats": {
+        "programming": 25,
+        "cyber_awareness": 25,
+        "intelligence": 20
+      },
+      "effects": {
+        "programming_bonus": 15,
+        "cyber_awareness_bonus": 15,
+        "hacking_bonus": 10
+      },
+      "category": "Tech",
+      "tier": 4,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 8,
+    "fields": {
+      "name": "Phoenix Rebirth",
+      "description": "Du kannst dich aus dem Nichts wiedererstehen und wirst stärker als zuvor.",
+      "layer": "Real",
+      "required_level": 25,
+      "required_xp_type": "Ultra",
+      "required_xp_amount": 15000,
+      "required_stats": {
+        "willpower": 35,
+        "endurance": 30,
+        "strength": 25
+      },
+      "effects": {
+        "willpower_bonus": 20,
+        "endurance_bonus": 15,
+        "strength_bonus": 10,
+        "regeneration": true
+      },
+      "category": "Combat",
+      "tier": 5,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 9,
+    "fields": {
+      "name": "Quantum Hacker",
+      "description": "Du beherrschst die Quantenprogrammierung und kannst die Realität selbst hacken.",
+      "layer": "Cyber",
+      "required_level": 25,
+      "required_xp_type": "Ultra",
+      "required_xp_amount": 15000,
+      "required_stats": {
+        "programming": 35,
+        "hacking": 30,
+        "intelligence": 30
+      },
+      "effects": {
+        "programming_bonus": 25,
+        "hacking_bonus": 20,
+        "cyber_awareness_bonus": 15,
+        "reality_hack": true
+      },
+      "category": "Tech",
+      "tier": 5,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 10,
+    "fields": {
+      "name": "Meditation Master",
+      "description": "Du beherrschst die Kunst der Meditation und kannst deinen Geist vollständig kontrollieren.",
+      "layer": "Real",
+      "required_level": 6,
+      "required_xp_type": "Mental",
+      "required_xp_amount": 1200,
+      "required_stats": {
+        "focus": 18,
+        "willpower": 12
+      },
+      "effects": {
+        "focus_bonus": 8,
+        "willpower_bonus": 5,
+        "stress_resistance": true
+      },
+      "category": "Utility",
+      "tier": 1,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z"
+    }
+  }
+] 

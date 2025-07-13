@@ -8,6 +8,14 @@ LAYER_TYPE_CHOICES = [
     ('Game', 'Game'),
 ]
 
+# Erweiterte XP-Typen für das Skills-System
+XP_TYPE_CHOICES = [
+    ('Physical', 'Physical'),
+    ('Mental', 'Mental'), 
+    ('Cyber', 'Cyber'),
+    ('Ultra', 'Ultra'),
+]
+
 class XpType(models.Model):
     """
     Definiert eine Aktivität, für die XP vergeben werden.
@@ -22,6 +30,12 @@ class XpType(models.Model):
         help_text='z. B. "repetition", "time_minute", "step"'
     )
     description = models.TextField(blank=True, null=True)
+    xp_type = models.CharField(
+        max_length=20,
+        choices=XP_TYPE_CHOICES,
+        default='Physical',
+        help_text='XP-Typ für Skills-System'
+    )
 
     def __str__(self):
         return f"{self.display_name} ({self.xp_amount} XP/{self.unit})"

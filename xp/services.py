@@ -47,6 +47,14 @@ def add_xp_to_user(user, type_key: str, amount_units: float, layer_type: str = "
     user.level = new_level
     user.save(update_fields=['xp', 'level'])
 
+    # Character Stats aktualisieren (Skills-System)
+    try:
+        from skills.services import update_character_stats_from_xp
+        update_character_stats_from_xp(user, real_xp, xp_type.xp_type)
+    except ImportError:
+        # Skills-App nicht verfügbar, ignoriere
+        pass
+
     today = timezone.now().date()
     season = Season.objects.filter(is_active=True, start__lte=today, end__gt=today).first()
 

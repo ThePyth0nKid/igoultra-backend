@@ -3,9 +3,17 @@
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+def redirect_to_admin(request):
+    """Weiterleitung von der Root-URL zum Django Admin"""
+    return redirect('admin:index')
+
 urlpatterns = [
+    # Root-URL weiterleiten zum Admin
+    path("", redirect_to_admin, name="home"),
+    
     # Admin-Interface
     path("admin/", admin.site.urls),
 
