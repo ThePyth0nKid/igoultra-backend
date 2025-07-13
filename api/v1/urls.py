@@ -8,4 +8,5 @@ urlpatterns = [
     path("rankings/", include("api.v1.rankings.urls")),
     path("layers/", include("layers.urls")),
     path("skills/", include("skills.urls")),
+    path("missions/", include("missions.urls")),
 ]

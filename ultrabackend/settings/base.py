@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "layers",
     "stats",
     "skills",
+    "missions",
     "community_rang",
     "bitgold",
     "wallet",

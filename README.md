@@ -8,6 +8,7 @@ Das Projekt verfolgt das Ziel, Bewegung spielerisch zu fördern und virtuelle so
 ## 📖 Inhaltsverzeichnis
 - [Features](#features)
 - [🧠 Skills- & XP-System](#skills--xp-system)
+- [Missionssystem (Daily, Weekly, Seasonal Quests)](#missionssystem-daily-weekly-seasonal-quests)
 - [Technologie-Stack](#technologie-stack)
 - [Quickstart](#quickstart)
 - [API-Dokumentation](#api-dokumentation)
@@ -77,6 +78,62 @@ Das Skills- und XP-System ist modular, API-basiert und voll funktionsfähig inte
 - Die Stat-Logik ist zentral in `skills/services.py` und kann für komplexere Progression angepasst werden.
 
 **Das System ist bereit für den produktiven Einsatz und für weitere Game-Logik!**
+
+---
+
+## 🏆 Missionssystem (Daily, Weekly, Seasonal Quests)
+
+Das Missionssystem ist modular, API-first und erkennt automatisch Aktivitäten aus dem iGoUltra-Universum. Es verwaltet tägliche, wöchentliche und saisonale Quests, belohnt User und ist vollständig erweiterbar.
+
+### Features & API
+- **Missionstypen:** Daily, Weekly, Seasonal (pro Season)
+- **Einheiten:** steps, minutes_in_game, pushups, quests_completed, xp_gained, skills_unlocked, layers_completed, social_interactions, workout_sessions, meditation_minutes, hacking_attempts, real_world_activities, ...
+- **Belohnungen:** XP, Gold, Ultra-Points
+- **Automatische Fortschrittserkennung:** Fortschritt wird bei jeder relevanten Aktivität automatisch aktualisiert
+- **REST API:**
+  - `GET    /api/v1/missions/active/`         → Alle aktiven Missionen für den User
+  - `GET    /api/v1/missions/progress/`       → Fortschritt für eingeloggten User
+  - `GET    /api/v1/missions/completed/`      → Abgeschlossene Missionen
+  - `GET    /api/v1/missions/seasons/active/` → Aktuelle Season
+  - `POST   /api/v1/missions/progress/update/`→ Fortschritt manuell erhöhen (z.B. für Tests)
+  - `GET    /api/v1/missions/statistics/`     → Mission-Statistiken für den User
+  - `GET    /api/v1/missions/rewards/`        → Gesamt-Belohnungen
+  - `GET    /api/v1/missions/`                → Alle Missionen (Admin)
+  - `POST   /api/v1/missions/create/`         → Neue Mission anlegen (Admin)
+  - `GET    /api/v1/missions/seasons/`        → Alle Seasons (Admin)
+  - `POST   /api/v1/missions/seasons/create/` → Neue Season anlegen (Admin)
+
+### Modularer Aufbau
+- **missions/models.py:**
+  - `Season` (nur eine aktive Season gleichzeitig)
+  - `Mission` (Typ, Einheit, Zielwert, Belohnungen, Zeitrahmen, Season)
+  - `MissionProgress` (pro User, Fortschritt, Abschluss, Zeitstempel)
+- **missions/services.py:**
+  - Fortschritts-Update, Belohnungslogik, Statistiken, Vorschläge
+- **missions/serializers.py:**
+  - Serializers für alle API-Objekte
+- **missions/views.py:**
+  - Alle Endpunkte als APIViews/Generics
+- **missions/urls.py:**
+  - Sauberes Routing, einfach erweiterbar
+- **missions/signals.py:**
+  - Automatische Verknüpfung zu XP, Skills, Layern etc.
+
+### Admin-Panel
+- **Missionen, Seasons und Fortschritt** können komfortabel im Django-Admin verwaltet werden
+- Automatische Validierung: Nur eine aktive Season, Belohnungen, Zeitrahmen etc.
+- Fortschritt und Abschlussstatus pro User einsehbar
+
+### Test & Beispiel-Daten
+- **Fixtures:**
+  - `missions/fixtures/missions.json` (Beispiel-Missionen & Season)
+- **Management-Command:**
+  - `python manage.py test_missions_system --create-user`  → Testet das gesamte Missionssystem inkl. Fortschritt, Belohnungen, Statistiken
+
+### Hinweise
+- Das System ist **vollständig modular** und kann um Monatsmissionen, Events etc. erweitert werden
+- Die API ist **RESTful** und kann direkt im Frontend/Swagger UI getestet werden
+- Fortschritt wird automatisch bei XP-Gewinn, Skill-Freischaltung, Layer-Abschluss etc. aktualisiert (siehe signals.py)
 
 ---
 
