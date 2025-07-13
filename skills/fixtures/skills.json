@@ -6,6 +6,7 @@
       "name": "Iron Will",
       "description": "Deine Willenskraft ist unerschütterlich. Du kannst länger durchhalten und bist resistenter gegen mentale Angriffe.",
       "layer": "Real",
+      "skill_type": "passive",
       "required_level": 5,
       "required_xp_type": "Physical",
       "required_xp_amount": 1000,
@@ -20,7 +21,11 @@
       "category": "Combat",
       "tier": 1,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "resistance",
+      "buff_value": "+15%",
+      "trigger_condition": "always_active",
+      "passive_duration": null
     }
   },
   {
@@ -30,6 +35,7 @@
       "name": "Mind Reader",
       "description": "Du kannst die Gedanken und Emotionen anderer Menschen lesen und verstehen.",
       "layer": "Real",
+      "skill_type": "active",
       "required_level": 10,
       "required_xp_type": "Mental",
       "required_xp_amount": 2000,
@@ -44,7 +50,12 @@
       "category": "Utility",
       "tier": 2,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 10,
+      "area_of_effect": 5,
+      "damage": 0,
+      "duration": 30,
+      "effect_type": "debuff"
     }
   },
   {
@@ -54,6 +65,7 @@
       "name": "Cyber Hacker",
       "description": "Du beherrschst die Kunst des Hackens und kannst in digitale Systeme eindringen.",
       "layer": "Cyber",
+      "skill_type": "active",
       "required_level": 8,
       "required_xp_type": "Cyber",
       "required_xp_amount": 1500,
@@ -68,7 +80,12 @@
       "category": "Tech",
       "tier": 2,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 15,
+      "area_of_effect": 0,
+      "damage": 25,
+      "duration": 60,
+      "effect_type": "damage"
     }
   },
   {
@@ -78,6 +95,7 @@
       "name": "Shadow Strike",
       "description": "Du bewegst dich wie ein Schatten und fügst deinen Gegnern tödliche Schläge zu.",
       "layer": "Real",
+      "skill_type": "active",
       "required_level": 15,
       "required_xp_type": "Physical",
       "required_xp_amount": 5000,
@@ -94,7 +112,12 @@
       "category": "Combat",
       "tier": 3,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 8,
+      "area_of_effect": 0,
+      "damage": 75,
+      "duration": 0,
+      "effect_type": "damage"
     }
   },
   {
@@ -104,6 +127,7 @@
       "name": "Digital Ghost",
       "description": "Du hinterlässt keine Spuren im digitalen Raum und kannst unentdeckt durch das Netz wandern.",
       "layer": "Cyber",
+      "skill_type": "passive",
       "required_level": 12,
       "required_xp_type": "Cyber",
       "required_xp_amount": 3000,
@@ -120,7 +144,11 @@
       "category": "Tech",
       "tier": 3,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "stealth",
+      "buff_value": "+20%",
+      "trigger_condition": "always_active",
+      "passive_duration": null
     }
   },
   {
@@ -130,6 +158,7 @@
       "name": "Ultra Instinct",
       "description": "Deine Reaktionen sind so schnell, dass sie deinem Bewusstsein vorausgehen.",
       "layer": "Real",
+      "skill_type": "passive",
       "required_level": 20,
       "required_xp_type": "Ultra",
       "required_xp_amount": 10000,
@@ -146,7 +175,11 @@
       "category": "Combat",
       "tier": 4,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "evasion",
+      "buff_value": "+25%",
+      "trigger_condition": "on_damage_taken",
+      "passive_duration": 10
     }
   },
   {
@@ -156,6 +189,7 @@
       "name": "Neural Link",
       "description": "Du kannst direkt mit digitalen Systemen kommunizieren und sie mit deinen Gedanken steuern.",
       "layer": "Cyber",
+      "skill_type": "active",
       "required_level": 18,
       "required_xp_type": "Cyber",
       "required_xp_amount": 8000,
@@ -172,7 +206,12 @@
       "category": "Tech",
       "tier": 4,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 20,
+      "area_of_effect": 10,
+      "damage": 0,
+      "duration": 120,
+      "effect_type": "buff"
     }
   },
   {
@@ -182,6 +221,7 @@
       "name": "Phoenix Rebirth",
       "description": "Du kannst dich aus dem Nichts wiedererstehen und wirst stärker als zuvor.",
       "layer": "Real",
+      "skill_type": "passive",
       "required_level": 25,
       "required_xp_type": "Ultra",
       "required_xp_amount": 15000,
@@ -199,7 +239,11 @@
       "category": "Combat",
       "tier": 5,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "regeneration",
+      "buff_value": "+50%",
+      "trigger_condition": "on_low_hp",
+      "passive_duration": 30
     }
   },
   {
@@ -209,6 +253,7 @@
       "name": "Quantum Hacker",
       "description": "Du beherrschst die Quantenprogrammierung und kannst die Realität selbst hacken.",
       "layer": "Cyber",
+      "skill_type": "active",
       "required_level": 25,
       "required_xp_type": "Ultra",
       "required_xp_amount": 15000,
@@ -226,7 +271,12 @@
       "category": "Tech",
       "tier": 5,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 50,
+      "area_of_effect": 25,
+      "damage": 150,
+      "duration": 300,
+      "effect_type": "damage"
     }
   },
   {
@@ -236,6 +286,7 @@
       "name": "Meditation Master",
       "description": "Du beherrschst die Kunst der Meditation und kannst deinen Geist vollständig kontrollieren.",
       "layer": "Real",
+      "skill_type": "passive",
       "required_level": 6,
       "required_xp_type": "Mental",
       "required_xp_amount": 1200,
@@ -251,7 +302,159 @@
       "category": "Utility",
       "tier": 1,
       "is_active": true,
-      "created_at": "2025-07-11T14:00:00Z"
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "focus",
+      "buff_value": "+10%",
+      "trigger_condition": "always_active",
+      "passive_duration": null
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 11,
+    "fields": {
+      "name": "Fireball",
+      "description": "Du erzeugst eine mächtige Feuerkugel, die deine Gegner verbrennt.",
+      "layer": "Real",
+      "skill_type": "active",
+      "required_level": 7,
+      "required_xp_type": "Physical",
+      "required_xp_amount": 1500,
+      "required_stats": {
+        "intelligence": 15,
+        "focus": 12
+      },
+      "effects": {
+        "intelligence_bonus": 3,
+        "focus_bonus": 2
+      },
+      "category": "Combat",
+      "tier": 2,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 12,
+      "area_of_effect": 3,
+      "damage": 45,
+      "duration": 5,
+      "effect_type": "burn"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 12,
+    "fields": {
+      "name": "Healing Touch",
+      "description": "Du kannst Wunden heilen und deine Verbündeten wiederherstellen.",
+      "layer": "Real",
+      "skill_type": "active",
+      "required_level": 9,
+      "required_xp_type": "Mental",
+      "required_xp_amount": 1800,
+      "required_stats": {
+        "intelligence": 18,
+        "charisma": 15
+      },
+      "effects": {
+        "intelligence_bonus": 4,
+        "charisma_bonus": 3
+      },
+      "category": "Utility",
+      "tier": 2,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 8,
+      "area_of_effect": 0,
+      "damage": -30,
+      "duration": 0,
+      "effect_type": "heal"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 13,
+    "fields": {
+      "name": "Ice Shield",
+      "description": "Du erzeugst einen schützenden Eisschild um dich herum.",
+      "layer": "Real",
+      "skill_type": "passive",
+      "required_level": 11,
+      "required_xp_type": "Mental",
+      "required_xp_amount": 2200,
+      "required_stats": {
+        "focus": 20,
+        "endurance": 15
+      },
+      "effects": {
+        "focus_bonus": 5,
+        "endurance_bonus": 3
+      },
+      "category": "Combat",
+      "tier": 2,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "shield",
+      "buff_value": "+20%",
+      "trigger_condition": "on_damage_taken",
+      "passive_duration": 15
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 14,
+    "fields": {
+      "name": "Lightning Strike",
+      "description": "Du rufst einen mächtigen Blitzschlag vom Himmel herab.",
+      "layer": "Real",
+      "skill_type": "active",
+      "required_level": 14,
+      "required_xp_type": "Physical",
+      "required_xp_amount": 3500,
+      "required_stats": {
+        "intelligence": 22,
+        "focus": 18
+      },
+      "effects": {
+        "intelligence_bonus": 6,
+        "focus_bonus": 4
+      },
+      "category": "Combat",
+      "tier": 3,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z",
+      "range": 25,
+      "area_of_effect": 8,
+      "damage": 90,
+      "duration": 3,
+      "effect_type": "stun"
+    }
+  },
+  {
+    "model": "skills.skill",
+    "pk": 15,
+    "fields": {
+      "name": "Vampiric Aura",
+      "description": "Du saugst die Lebenskraft deiner Gegner ab und heilst dich dabei.",
+      "layer": "Real",
+      "skill_type": "passive",
+      "required_level": 16,
+      "required_xp_type": "Physical",
+      "required_xp_amount": 4000,
+      "required_stats": {
+        "willpower": 25,
+        "intelligence": 20
+      },
+      "effects": {
+        "willpower_bonus": 8,
+        "intelligence_bonus": 5
+      },
+      "category": "Combat",
+      "tier": 3,
+      "is_active": true,
+      "created_at": "2025-07-11T14:00:00Z",
+      "buff_type": "healing",
+      "buff_value": "+15%",
+      "trigger_condition": "on_kill",
+      "passive_duration": 20
     }
   }
 ] 

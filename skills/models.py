@@ -26,6 +26,54 @@ LAYER_CHOICES = [
     ('Cyber', 'Cyber'),
 ]
 
+# Skill-Typen für aktive/passive Unterscheidung
+SKILL_TYPE_CHOICES = [
+    ('active', 'Active'),
+    ('passive', 'Passive'),
+]
+
+# Effekt-Typen für aktive Skills
+EFFECT_TYPE_CHOICES = [
+    ('stun', 'Stun'),
+    ('burn', 'Burn'),
+    ('slow', 'Slow'),
+    ('heal', 'Heal'),
+    ('damage', 'Damage'),
+    ('buff', 'Buff'),
+    ('debuff', 'Debuff'),
+    ('teleport', 'Teleport'),
+    ('shield', 'Shield'),
+    ('stealth', 'Stealth'),
+]
+
+# Buff-Typen für passive Skills
+BUFF_TYPE_CHOICES = [
+    ('resistance', 'Resistance'),
+    ('shield', 'Shield'),
+    ('aura', 'Aura'),
+    ('regeneration', 'Regeneration'),
+    ('damage_boost', 'Damage Boost'),
+    ('speed_boost', 'Speed Boost'),
+    ('critical_chance', 'Critical Chance'),
+    ('armor', 'Armor'),
+    ('evasion', 'Evasion'),
+    ('healing', 'Healing'),
+]
+
+# Trigger-Bedingungen für passive Skills
+TRIGGER_CONDITION_CHOICES = [
+    ('always_active', 'Always Active'),
+    ('on_low_hp', 'On Low HP'),
+    ('on_critical_hit', 'On Critical Hit'),
+    ('on_damage_taken', 'On Damage Taken'),
+    ('on_kill', 'On Kill'),
+    ('on_heal', 'On Heal'),
+    ('on_skill_use', 'On Skill Use'),
+    ('on_block', 'On Block'),
+    ('on_dodge', 'On Dodge'),
+    ('on_combo', 'On Combo'),
+]
+
 class CharacterStats(models.Model):
     """
     Charakter-Statistiken für jeden User.
@@ -100,10 +148,19 @@ class CharacterStats(models.Model):
 class Skill(models.Model):
     """
     Fähigkeiten, die durch bestimmte Voraussetzungen freigeschaltet werden können.
+    Unterstützt aktive und passive Skills mit unterschiedlichen Eigenschaften.
     """
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
     layer = models.CharField(max_length=10, choices=LAYER_CHOICES)
+    
+    # Skill-Typ: aktiv oder passiv
+    skill_type = models.CharField(
+        max_length=10, 
+        choices=SKILL_TYPE_CHOICES,
+        default='active',
+        help_text="Bestimmt ob der Skill aktiv oder passiv ist"
+    )
     
     # Voraussetzungen
     required_level = models.PositiveIntegerField(default=1, help_text="Minimales Level")
@@ -126,14 +183,119 @@ class Skill(models.Model):
     category = models.CharField(max_length=50, blank=True, help_text="z.B. 'Combat', 'Utility'")
     tier = models.PositiveIntegerField(default=1, help_text="Skill-Tier (1-5)")
     
+    # === AKTIVE SKILL FELDER ===
+    # Nur relevant wenn skill_type = 'active'
+    range = models.PositiveIntegerField(
+        blank=True, 
+        null=True, 
+        help_text="Reichweite in Metern (nur für aktive Skills)"
+    )
+    area_of_effect = models.PositiveIntegerField(
+        blank=True, 
+        null=True, 
+        help_text="Radius der Wirkung in Metern (nur für aktive Skills)"
+    )
+    damage = models.IntegerField(
+        blank=True, 
+        null=True, 
+        help_text="Schadenswert (positiv für Schaden, negativ für Heilung, nur für aktive Skills)"
+    )
+    duration = models.PositiveIntegerField(
+        blank=True, 
+        null=True, 
+        help_text="Dauer in Sekunden (nur für aktive Skills)"
+    )
+    effect_type = models.CharField(
+        max_length=20, 
+        choices=EFFECT_TYPE_CHOICES,
+        blank=True, 
+        null=True,
+        help_text="Art des Effekts (nur für aktive Skills)"
+    )
+    
+    # === PASSIVE SKILL FELDER ===
+    # Nur relevant wenn skill_type = 'passive'
+    buff_type = models.CharField(
+        max_length=20, 
+        choices=BUFF_TYPE_CHOICES,
+        blank=True, 
+        null=True,
+        help_text="Art des Buffs (nur für passive Skills)"
+    )
+    buff_value = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        help_text="Buff-Wert z.B. '+10%', '+5', '2x' (nur für passive Skills)"
+    )
+    trigger_condition = models.CharField(
+        max_length=20, 
+        choices=TRIGGER_CONDITION_CHOICES,
+        blank=True, 
+        null=True,
+        help_text="Aktivierungsbedingung (nur für passive Skills)"
+    )
+    passive_duration = models.PositiveIntegerField(
+        blank=True, 
+        null=True, 
+        help_text="Dauer in Sekunden (nur für temporäre passive Skills)"
+    )
+    
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        ordering = ['tier', 'name']
+        ordering = ['skill_type', 'tier', 'name']
     
     def __str__(self):
-        return f"{self.name} ({self.layer})"
+        return f"{self.name} ({self.get_skill_type_display()}, {self.layer})"
+    
+    def clean(self):
+        """Validiert die Skill-Konfiguration basierend auf dem Skill-Typ"""
+        from django.core.exceptions import ValidationError
+        
+        if self.skill_type == 'active':
+            # Aktive Skills müssen mindestens einen Effekt haben
+            if not any([self.damage, self.effect_type]):
+                raise ValidationError("Aktive Skills müssen mindestens Schaden oder einen Effekt-Typ haben.")
+            
+            # Aktive Skills sollten eine Reichweite haben
+            if not self.range:
+                raise ValidationError("Aktive Skills sollten eine Reichweite haben.")
+        
+        elif self.skill_type == 'passive':
+            # Passive Skills müssen einen Buff-Typ haben
+            if not self.buff_type:
+                raise ValidationError("Passive Skills müssen einen Buff-Typ haben.")
+            
+            # Passive Skills sollten einen Buff-Wert haben
+            if not self.buff_value:
+                raise ValidationError("Passive Skills müssen einen Buff-Wert haben.")
+    
+    def get_active_skill_data(self):
+        """Gibt die aktiven Skill-Daten zurück"""
+        if self.skill_type != 'active':
+            return None
+        
+        return {
+            'range': self.range,
+            'area_of_effect': self.area_of_effect,
+            'damage': self.damage,
+            'duration': self.duration,
+            'effect_type': self.effect_type,
+        }
+    
+    def get_passive_skill_data(self):
+        """Gibt die passiven Skill-Daten zurück"""
+        if self.skill_type != 'passive':
+            return None
+        
+        return {
+            'buff_type': self.buff_type,
+            'buff_value': self.buff_value,
+            'trigger_condition': self.trigger_condition,
+            'duration': self.passive_duration,
+        }
     
     def check_requirements(self, user):
         """

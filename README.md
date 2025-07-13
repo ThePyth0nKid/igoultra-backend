@@ -494,3 +494,249 @@ git push origin feature/neue-funktion
 Dieses Backend ist Teil des iGoUltra-Universums. Für Frontend oder Discord-Integration existieren separate Repositories.
 
 **Entwickelt mit ❤️ für die iGoUltra Community**
+
+# Skillsystem: Aktive & Passive Skills
+
+## Übersicht
+
+Das Skill-System unterscheidet zwischen **aktiven** und **passiven** Skills:
+- **Aktive Skills**: Müssen vom Spieler ausgelöst werden, haben Effekte wie Schaden, Heilung, Flächenwirkung etc.
+- **Passive Skills**: Wirken dauerhaft oder werden automatisch unter bestimmten Bedingungen aktiviert (z. B. Buffs, Auren, Resistenzen).
+
+Jeder Skill gehört zu einem Layer (`Real` oder `Cyber`) und kann weitere Voraussetzungen haben.
+
+---
+
+## Skill-Modell (Felder)
+
+| Feld                | Typ         | Beschreibung                                                                 |
+|---------------------|-------------|------------------------------------------------------------------------------|
+| name                | str         | Name des Skills                                                              |
+| description         | str         | Beschreibung                                                                 |
+| layer               | str         | „Real“ oder „Cyber“                                                          |
+| skill_type          | str         | „active“ oder „passive“                                                      |
+| required_level      | int         | Mindestlevel                                                                 |
+| required_xp_type    | str         | XP-Typ (z. B. „Physical“, „Mental“)                                          |
+| required_xp_amount  | int         | Benötigte XP im Typ                                                          |
+| required_stats      | JSON        | Benötigte Stats (z. B. {"strength": 10})                                     |
+| effects             | JSON        | Zusätzliche Effekte                                                          |
+| category            | str         | Kategorie (z. B. „Combat“, „Utility“)                                        |
+| tier                | int         | Tier-Stufe                                                                   |
+| is_active           | bool        | Skill aktiv                                                                  |
+| created_at          | datetime    | Erstellungsdatum                                                             |
+
+**Nur für aktive Skills (`skill_type = 'active'`):**
+| Feld           | Typ    | Beschreibung                        |
+|----------------|--------|-------------------------------------|
+| range          | int    | Reichweite in Metern                |
+| area_of_effect | int    | Radius der Wirkung in Metern        |
+| damage         | int    | Schaden (positiv) oder Heilung (negativ) |
+| duration       | int    | Dauer in Sekunden                   |
+| effect_type    | str    | Effekt-Typ (z. B. „stun“, „burn“)   |
+
+**Nur für passive Skills (`skill_type = 'passive'`):**
+| Feld             | Typ    | Beschreibung                        |
+|------------------|--------|-------------------------------------|
+| buff_type        | str    | Art des Buffs (z. B. „resistance“)  |
+| buff_value       | str    | Wert des Buffs (z. B. „+10%“)       |
+| trigger_condition| str    | Auslösebedingung (z. B. „on_low_hp“)|
+| passive_duration | int    | Dauer in Sekunden (optional)        |
+
+---
+
+## Endpunkte
+
+### 1. **Alle Skills (mit Filter)**
+**GET** `/api/v1/skills/`  
+**Query-Parameter:**  
+- `skill_type=active` oder `skill_type=passive`
+- `layer=Real` oder `layer=Cyber`
+- `category=Combat` usw.
+
+**Beispiel:**  
+`GET /api/v1/skills/?skill_type=active&layer=Real`
+
+---
+
+### 2. **Nur aktive Skills**
+**GET** `/api/v1/skills/active/`  
+**Query-Parameter:**  
+- `layer`, `category`, `effect_type` (optional)
+
+**Beispiel:**  
+`GET /api/v1/skills/active/?effect_type=stun`
+
+---
+
+### 3. **Nur passive Skills**
+**GET** `/api/v1/skills/passive/`  
+**Query-Parameter:**  
+- `layer`, `category`, `buff_type`, `trigger_condition` (optional)
+
+**Beispiel:**  
+`GET /api/v1/skills/passive/?buff_type=shield`
+
+---
+
+### 4. **Skill-Detail**
+**GET** `/api/v1/skills/<id>/`  
+Zeigt alle Felder, inkl. aktiver/passiver Skill-spezifischer Felder.
+
+---
+
+### 5. **Skill anlegen (Admin)**
+**POST** `/api/v1/skills/create/`  
+**Body (JSON):**
+```json
+{
+  "name": "Fireball",
+  "description": "Du erzeugst eine mächtige Feuerkugel.",
+  "layer": "Real",
+  "skill_type": "active",
+  "required_level": 7,
+  "required_xp_type": "Physical",
+  "required_xp_amount": 1500,
+  "required_stats": {"intelligence": 15, "focus": 12},
+  "effects": {"intelligence_bonus": 3, "focus_bonus": 2},
+  "category": "Combat",
+  "tier": 2,
+  "range": 12,
+  "area_of_effect": 3,
+  "damage": 45,
+  "duration": 5,
+  "effect_type": "burn"
+}
+```
+**Validierung:**  
+- Für `active` müssen mindestens `damage` oder `effect_type` und `range` gesetzt sein.
+- Für `passive` müssen `buff_type` und `buff_value` gesetzt sein.
+
+---
+
+### 6. **Verfügbare Skills für User**
+**GET** `/api/v1/skills/available/`  
+Filterbar nach `layer`, `category`, `skill_type` usw.
+
+---
+
+### 7. **Freigeschaltete Skills des Users**
+**GET** `/api/v1/skills/unlocked/`  
+**GET** `/api/v1/skills/unlocked/active/`  
+**GET** `/api/v1/skills/unlocked/passive/`  
+
+---
+
+### 8. **Skill-Fortschritt & Freischaltung**
+**GET** `/api/v1/skills/<id>/progress/`  
+**POST** `/api/v1/skills/unlock/`  
+Body: `{ "skill_id": 1 }`
+
+---
+
+## Beispiel-Responses
+
+### Aktiver Skill (GET `/api/v1/skills/active/`)
+```json
+{
+  "id": 2,
+  "name": "Mind Reader",
+  "description": "Du kannst die Gedanken und Emotionen anderer Menschen lesen und verstehen.",
+  "layer": "Real",
+  "skill_type": "active",
+  "required_level": 10,
+  "required_xp_type": "Mental",
+  "required_xp_amount": 2000,
+  "required_stats": {"intelligence": 20, "intuition": 15},
+  "effects": {"intelligence_bonus": 5, "charisma_bonus": 3},
+  "category": "Utility",
+  "tier": 2,
+  "is_active": true,
+  "created_at": "2025-07-11T14:00:00Z",
+  "active_skill_data": {
+    "range": 10,
+    "area_of_effect": 5,
+    "damage": 0,
+    "duration": 30,
+    "effect_type": "debuff"
+  },
+  "passive_skill_data": null
+}
+```
+
+### Passiver Skill (GET `/api/v1/skills/passive/`)
+```json
+{
+  "id": 1,
+  "name": "Iron Will",
+  "description": "Deine Willenskraft ist unerschütterlich.",
+  "layer": "Real",
+  "skill_type": "passive",
+  "required_level": 5,
+  "required_xp_type": "Physical",
+  "required_xp_amount": 1000,
+  "required_stats": {"willpower": 15, "endurance": 10},
+  "effects": {"willpower_bonus": 5, "endurance_bonus": 3},
+  "category": "Combat",
+  "tier": 1,
+  "is_active": true,
+  "created_at": "2025-07-11T14:00:00Z",
+  "active_skill_data": null,
+  "passive_skill_data": {
+    "buff_type": "resistance",
+    "buff_value": "+15%",
+    "trigger_condition": "always_active",
+    "duration": null
+  }
+}
+```
+
+---
+
+## Beispiel: Skill freischalten
+
+**POST** `/api/v1/skills/unlock/`
+```json
+{
+  "skill_id": 2
+}
+```
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Skill erfolgreich freigeschaltet."
+}
+```
+
+---
+
+## Beispiel: Skill-Fortschritt
+
+**GET** `/api/v1/skills/2/progress/`
+```json
+{
+  "skill": { ...Skill-Daten... },
+  "requirements_met": {
+    "level": true,
+    "xp": true,
+    "stats": true
+  },
+  "overall_progress": 1.0,
+  "can_unlock": true,
+  "message": "Alle Voraussetzungen erfüllt",
+  "is_unlocked": false
+}
+```
+
+---
+
+## Hinweise zur Erweiterbarkeit
+
+- Neue Skill-Typen (z. B. „ultimate“) können einfach über das Enum und die Serializers ergänzt werden.
+- Die API ist so gestaltet, dass Frontends (z. B. 2D/3D-Spiele) alle nötigen Skill-Parameter direkt auslesen können.
+- Die Validierung sorgt dafür, dass Skills immer konsistent angelegt werden.
+
+---
+
+**Fragen oder weitere Beispiele gewünscht?**  
+Gerne kann ich auch Beispiel-Requests für das Freischalten oder die Skill-Fortschritts-API liefern!
