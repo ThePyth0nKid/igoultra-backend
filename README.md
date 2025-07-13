@@ -507,20 +507,55 @@ Jeder Skill gehört zu einem Layer (`Real` oder `Cyber`) und kann weitere Voraus
 
 ---
 
+## Admin Panel: Character Stats einsehen
+
+### Character Stats eines Users anzeigen
+
+Im Django Admin Panel kannst du die Character Stats (Ausdauer, Stärke, etc.) eines Users auf verschiedene Arten einsehen:
+
+#### **1. In der User-Liste**
+- Gehe zu: `/admin/users/user/`
+- Du siehst eine Spalte **"Character Stats"** mit einem Link "Stats anzeigen"
+- Klicke auf den Link, um die detaillierten Stats zu sehen
+
+#### **2. In der User-Detail-Ansicht**
+- Klicke auf einen User in der Liste
+- Scroll runter zum Abschnitt **"Character Stats"** (standardmäßig eingeklappt)
+- Dort siehst du alle Stats direkt übersichtlich dargestellt:
+  - **Body Stats**: Strength, Endurance, Agility
+  - **Mind Stats**: Intelligence, Focus, Memory  
+  - **Spirit Stats**: Willpower, Charisma, Intuition
+  - **Combat Stats**: Combat Skill, Reaction Time, Tactical Awareness
+  - **Tech Stats**: Hacking, Programming, Cyber Awareness
+
+#### **3. Direkt über CharacterStats**
+- Gehe zu: `/admin/skills/characterstats/`
+- Dort siehst du alle Character Stats aller User in einer Tabelle
+- Du kannst nach Usern filtern und suchen
+
+### Admin Panel Features
+
+- **Automatische Updates**: Stats werden automatisch aktualisiert, wenn User XP sammeln
+- **Übersichtliche Darstellung**: Alle Stats sind in Kategorien gruppiert
+- **Filter und Suche**: Einfaches Finden von Usern und deren Stats
+- **Direkte Links**: Schnelle Navigation zwischen User und Character Stats
+
+---
+
 ## Skill-Modell (Felder)
 
 | Feld                | Typ         | Beschreibung                                                                 |
 |---------------------|-------------|------------------------------------------------------------------------------|
 | name                | str         | Name des Skills                                                              |
 | description         | str         | Beschreibung                                                                 |
-| layer               | str         | „Real“ oder „Cyber“                                                          |
-| skill_type          | str         | „active“ oder „passive“                                                      |
+| layer               | str         | „Real" oder „Cyber"                                                          |
+| skill_type          | str         | „active" oder „passive"                                                      |
 | required_level      | int         | Mindestlevel                                                                 |
-| required_xp_type    | str         | XP-Typ (z. B. „Physical“, „Mental“)                                          |
+| required_xp_type    | str         | XP-Typ (z. B. „Physical", „Mental")                                          |
 | required_xp_amount  | int         | Benötigte XP im Typ                                                          |
 | required_stats      | JSON        | Benötigte Stats (z. B. {"strength": 10})                                     |
 | effects             | JSON        | Zusätzliche Effekte                                                          |
-| category            | str         | Kategorie (z. B. „Combat“, „Utility“)                                        |
+| category            | str         | Kategorie (z. B. „Combat", „Utility")                                        |
 | tier                | int         | Tier-Stufe                                                                   |
 | is_active           | bool        | Skill aktiv                                                                  |
 | created_at          | datetime    | Erstellungsdatum                                                             |
@@ -532,14 +567,14 @@ Jeder Skill gehört zu einem Layer (`Real` oder `Cyber`) und kann weitere Voraus
 | area_of_effect | int    | Radius der Wirkung in Metern        |
 | damage         | int    | Schaden (positiv) oder Heilung (negativ) |
 | duration       | int    | Dauer in Sekunden                   |
-| effect_type    | str    | Effekt-Typ (z. B. „stun“, „burn“)   |
+| effect_type    | str    | Effekt-Typ (z. B. „stun", „burn")   |
 
 **Nur für passive Skills (`skill_type = 'passive'`):**
 | Feld             | Typ    | Beschreibung                        |
 |------------------|--------|-------------------------------------|
-| buff_type        | str    | Art des Buffs (z. B. „resistance“)  |
-| buff_value       | str    | Wert des Buffs (z. B. „+10%“)       |
-| trigger_condition| str    | Auslösebedingung (z. B. „on_low_hp“)|
+| buff_type        | str    | Art des Buffs (z. B. „resistance")  |
+| buff_value       | str    | Wert des Buffs (z. B. „+10%")       |
+| trigger_condition| str    | Auslösebedingung (z. B. „on_low_hp")|
 | passive_duration | int    | Dauer in Sekunden (optional)        |
 
 ---
@@ -732,7 +767,7 @@ Body: `{ "skill_id": 1 }`
 
 ## Hinweise zur Erweiterbarkeit
 
-- Neue Skill-Typen (z. B. „ultimate“) können einfach über das Enum und die Serializers ergänzt werden.
+- Neue Skill-Typen (z. B. „ultimate") können einfach über das Enum und die Serializers ergänzt werden.
 - Die API ist so gestaltet, dass Frontends (z. B. 2D/3D-Spiele) alle nötigen Skill-Parameter direkt auslesen können.
 - Die Validierung sorgt dafür, dass Skills immer konsistent angelegt werden.
 
