@@ -25,8 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
         queryset=Origin.objects.all(), source="origin", write_only=True, required=False
     )
     missing_onboarding_fields = serializers.SerializerMethodField()
-    # Entferne das avatar-ImageField
-    # avatar = serializers.ImageField(required=False, allow_null=True)
+    avatar = serializers.ImageField(required=False, allow_null=True)
 
     def get_missing_onboarding_fields(self, obj):
         missing = []
@@ -52,7 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
             "xp",
             "rank",
             "avatar_url",
-            # "avatar",  # entfernt
+            "avatar",
             "bio",
             "faction",
             "faction_id",

@@ -60,3 +60,6 @@ if settings.DEBUG:
             name="swagger-ui"
         ),
     ]
+    # Media-Dateien im Development ausliefern
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -105,6 +105,13 @@ class User(AbstractUser):
         help_text='Individuelle Ultra-Bio des Users',
     )
 
+    avatar = models.ImageField(
+        upload_to="avatars/",
+        blank=True,
+        null=True,
+        help_text='Optional: Hochgeladenes Avatar-Bild (PNG/JPG)'
+    )
+
     # No additional required fields; superuser will use username
     REQUIRED_FIELDS = []
     USERNAME_FIELD = 'username'

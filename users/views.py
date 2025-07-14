@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.parsers import MultiPartParser, FormParser
 
 from .forms import ProfileCompletionForm
 from .serializers import UserSerializer
@@ -64,3 +65,19 @@ class MeView(APIView):
             user = type(request.user).objects.get(pk=request.user.pk)
             return Response(UserSerializer(user).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AvatarUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        user = request.user
+        avatar_file = request.FILES.get('avatar')
+        if not avatar_file:
+            return Response({"error": "Kein Avatar-Bild hochgeladen."}, status=status.HTTP_400_BAD_REQUEST)
+        user.avatar = avatar_file
+        user.save()  # Erst speichern!
+        user.avatar_url = request.build_absolute_uri(user.avatar.url)  # Dann URL setzen!
+        user.save()
+        return Response({"avatar": user.avatar_url}, status=status.HTTP_200_OK)

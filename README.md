@@ -832,3 +832,40 @@ Body: `{ "skill_id": 1 }`
 
 **Fragen oder weitere Beispiele gewünscht?**  
 Gerne kann ich auch Beispiel-Requests für das Freischalten oder die Skill-Fortschritts-API liefern!
+
+---
+
+## 🧩 Onboarding-Flow, Fehlerquellen & Bugfixes
+
+### Übersicht & Umsetzung
+- **Modularer Onboarding-Flow**: Der Onboarding-Prozess ist API-first und umfasst folgende Schritte/Felder:
+  - Discord-Login (OAuth, kein klassisches Passwort)
+  - Ultraname (Benutzername im iGoUltra-Universum)
+  - Fraktion (z.B. Kapitalisten, Kommunisten, Gläubige) – als eigene App, ForeignKey im User
+  - Herkunft (z.B. Berlin, Neo-Tokyo, Mars, Unbekannt) – als eigene App, ForeignKey im User
+  - Bio (Freitextfeld im User)
+  - Avatar (Bild-Upload, separater Endpunkt)
+- **API-Integration**:
+  - Endpunkte zum Listen aller Fraktionen und Herkünfte
+  - PATCH/GET `/api/v1/auth/me/` gibt immer das Feld `missing_onboarding_fields` zurück, das dynamisch alle noch fehlenden Onboarding-Schritte enthält
+  - Avatar-Upload über `/api/v1/auth/avatar-upload/`, Bild wird in `media/avatars/` gespeichert, URL nach Upload korrekt gesetzt
+
+### Typische Fehlerquellen & Lösungen
+- **500er Fehler** durch falsche Serializer-Argumente (`files=...`):
+  - Lösung: Korrekte Übergabe der Daten im View, insbesondere beim Bild-Upload
+- **404er Fehler** durch fehlenden oder falsch gesetzten media-Ordner:
+  - Lösung: `MEDIA_ROOT` korrekt auf das Projekt-Root setzen (`BASE_DIR.parent / "media"`), Ordner anlegen, Django im Development `/media/`-URLs ausliefern lassen
+- **Falsche avatar_url** durch zu frühes Setzen vor dem Speichern:
+  - Lösung: Reihenfolge beachten – erst Bild speichern, dann URL generieren und setzen
+- **Falsche URL ohne `/avatars/`**:
+  - Lösung: Nach dem Speichern die URL mit Unterordner generieren (`/media/avatars/...`)
+- **Frontend-Integration**:
+  - Das Frontend muss immer die vom Backend gelieferte URL verwenden (z.B. `user.avatar_url`), niemals selbst den Pfad zusammenbauen
+
+### Hinweise zur Resilienz & Sicherheit
+- Der Onboarding-Status ist **rein datengetrieben**: Nach jedem Login oder Seiten-Reload prüft das Backend, welche Felder fehlen, und gibt diese als `missing_onboarding_fields` zurück
+- Es gibt **kein separates Onboarding-Flag** – der Status ist immer aktuell und kann nicht inkonsistent werden
+- **Empfehlung**: Teste, ob nach Abbruch (Tab schließen, Logout) der Onboarding-Status korrekt bleibt und der User beim nächsten Login an der richtigen Stelle weitermachen muss
+
+### Zusammenfassung
+Das Onboarding- und Missionssystem ist jetzt API-first, modular und robust. Der Avatar-Upload funktioniert wie gewünscht, alle relevanten Felder und Endpunkte sind vorhanden, und das Frontend kann sich auf die gelieferten URLs verlassen. Alle typischen Fehlerquellen wurden behoben und dokumentiert.
