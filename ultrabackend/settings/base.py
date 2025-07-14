@@ -82,6 +82,8 @@ INSTALLED_APPS = [
     "wallet",
     "store",
     "inventory",
+    "factions",
+    "origins",
 ]
 
 SITE_ID = 1

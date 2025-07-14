@@ -57,9 +57,10 @@ def update_missions_on_layer_completion(sender, instance, created, **kwargs):
     """
     Aktualisiert Mission-Fortschritt basierend auf Layer-Abschluss.
     """
-    if instance.is_completed:
-        update_mission_progress_for_activity(
-            user=instance.user,
-            unit='layers_completed',
-            value=1
-        ) 
+    # if instance.is_completed:
+    #     update_mission_progress_for_activity(
+    #         user=instance.user,
+    #         unit='layers_completed',
+    #         value=1
+    #     )
+    # Hinweis: Die Logik für Layer-Abschluss muss ggf. an anderer Stelle implementiert werden, wenn ein Abschluss-Status benötigt wird. 

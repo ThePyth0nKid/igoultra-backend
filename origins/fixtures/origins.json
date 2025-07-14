@@ -1,0 +1,38 @@
+[
+  {
+    "model": "origins.origin",
+    "pk": 1,
+    "fields": {
+      "name": "Berlin",
+      "description": "Hauptstadt Deutschlands, urban und kreativ.",
+      "type": "Stadt"
+    }
+  },
+  {
+    "model": "origins.origin",
+    "pk": 2,
+    "fields": {
+      "name": "Neo-Tokyo",
+      "description": "Futuristische Megacity, Zentrum für Cyberkultur.",
+      "type": "Stadt"
+    }
+  },
+  {
+    "model": "origins.origin",
+    "pk": 3,
+    "fields": {
+      "name": "Mars",
+      "description": "Erste Kolonie auf dem roten Planeten.",
+      "type": "Planet"
+    }
+  },
+  {
+    "model": "origins.origin",
+    "pk": 4,
+    "fields": {
+      "name": "Unbekannt",
+      "description": "Herkunft ist geheim oder nicht zuzuordnen.",
+      "type": "Unbekannt"
+    }
+  }
+] 

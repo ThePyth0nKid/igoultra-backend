@@ -5,6 +5,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from rankings.constants import REAL_LAYERS, CYBER_LAYERS
+from factions.models import Faction
+from origins.models import Origin
 
 
 class User(AbstractUser):
@@ -74,6 +76,33 @@ class User(AbstractUser):
         blank=True,
         null=True,
         help_text=_('Optional email address for contact or recovery'),
+    )
+
+    # Fraktion (optional, für Onboarding)
+    faction = models.ForeignKey(
+        Faction,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="users",
+        help_text='Gewählte Fraktion des Users',
+    )
+
+    # Herkunft (optional, für Onboarding)
+    origin = models.ForeignKey(
+        Origin,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="users",
+        help_text='Herkunft des Users (Ort, Land, Planet, etc.)',
+    )
+
+    # Bio (optional, für Onboarding)
+    bio = models.TextField(
+        blank=True,
+        null=True,
+        help_text='Individuelle Ultra-Bio des Users',
     )
 
     # No additional required fields; superuser will use username

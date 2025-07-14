@@ -9,4 +9,6 @@ urlpatterns = [
     path("layers/", include("layers.urls")),
     path("skills/", include("skills.urls")),
     path("missions/", include("missions.urls")),
+    path("factions/", include("factions.urls")),
+    path("origins/", include("origins.urls")),
 ]

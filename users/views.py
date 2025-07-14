@@ -60,5 +60,7 @@ class MeView(APIView):
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            # Nach dem Speichern: User neu laden, um alle Felder aktuell zu haben
+            user = type(request.user).objects.get(pk=request.user.pk)
+            return Response(UserSerializer(user).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

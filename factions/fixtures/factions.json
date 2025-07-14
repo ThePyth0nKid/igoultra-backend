@@ -1,0 +1,32 @@
+[
+  {
+    "model": "factions.faction",
+    "pk": 1,
+    "fields": {
+      "name": "Kapitalisten",
+      "description": "Streben nach Wohlstand, Fortschritt und individueller Freiheit.",
+      "style": "capitalist",
+      "icon": ""
+    }
+  },
+  {
+    "model": "factions.faction",
+    "pk": 2,
+    "fields": {
+      "name": "Kommunisten",
+      "description": "Gemeinschaft, Gleichheit und kollektives Handeln stehen im Vordergrund.",
+      "style": "communist",
+      "icon": ""
+    }
+  },
+  {
+    "model": "factions.faction",
+    "pk": 3,
+    "fields": {
+      "name": "Gläubige",
+      "description": "Spirituelle Werte, Glaube und Sinnsuche prägen diese Fraktion.",
+      "style": "believer",
+      "icon": ""
+    }
+  }
+] 
