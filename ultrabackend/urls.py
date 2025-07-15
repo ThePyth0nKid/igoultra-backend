@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api.v1.auth.views import CustomTokenObtainPairView
 
 def redirect_to_admin(request):
     """Weiterleitung von der Root-URL zum Django Admin"""
@@ -23,7 +24,7 @@ urlpatterns = [
     # Simple JWT endpoints for obtaining and refreshing JWTs
     path(
         "api/v1/auth/jwt/create/",
-        TokenObtainPairView.as_view(),
+        CustomTokenObtainPairView.as_view(),
         name="jwt-create"
     ),
     path(

@@ -869,3 +869,87 @@ Gerne kann ich auch Beispiel-Requests für das Freischalten oder die Skill-Forts
 
 ### Zusammenfassung
 Das Onboarding- und Missionssystem ist jetzt API-first, modular und robust. Der Avatar-Upload funktioniert wie gewünscht, alle relevanten Felder und Endpunkte sind vorhanden, und das Frontend kann sich auf die gelieferten URLs verlassen. Alle typischen Fehlerquellen wurden behoben und dokumentiert.
+
+---
+
+## 🛡️ Admin-User-API & Backend-Panel
+
+### Features
+- Vollständige User-Admin-API für das Admin-Panel (React/Vite-Frontend)
+- Endpunkte für User-Liste, Detail, Bearbeiten, Anlegen, Löschen
+- Zugriff nur für eingeloggte User mit `is_staff: true`
+- Alle relevanten Felder: id, username, email, is_staff, is_active, ultra_name, bio, avatar_url, avatar, faction, origin, missing_onboarding_fields, date_joined, last_login, level, xp, rank
+- Suche, Filter, Sortierung, Paginierung (DRF-Standard)
+
+### API-Endpunkte
+- **GET /api/v1/auth/admin/users/** – User-Liste (mit Suche, Filter, Paginierung)
+- **POST /api/v1/auth/admin/users/** – User anlegen
+- **GET /api/v1/auth/admin/users/<id>/** – User-Detail
+- **PATCH/PUT /api/v1/auth/admin/users/<id>/** – User bearbeiten
+- **DELETE /api/v1/auth/admin/users/<id>/** – User löschen
+
+**Hinweis:** Die Endpunkte sind unter `/api/v1/auth/admin/users/` erreichbar, da sie im auth-Router registriert sind.
+
+### Authentifizierung
+- JWT-Token wie im restlichen Projekt (Authorization: Bearer ...)
+- Nur User mit `is_staff: true` erhalten Zugriff (403 Forbidden sonst)
+
+### Pagination
+- Die API liefert standardmäßig paginierte Responses mit `results`-Array:
+  ```json
+  {
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [ ... ]
+  }
+  ```
+- Pagination ist in `settings/base.py` aktiviert:
+  ```python
+  REST_FRAMEWORK = {
+      ...
+      "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+      "PAGE_SIZE": 10,
+  }
+  ```
+
+### last_login Handling
+- Das Feld `last_login` wird jetzt **immer** aktualisiert:
+  - Nach erfolgreichem Discord-Login (OAuth)
+  - Nach klassischem JWT-Login (`/api/v1/auth/jwt/create/`)
+- Umsetzung: In beiden Login-Flows wird `user.last_login = timezone.now()` explizit gesetzt und gespeichert.
+- Damit ist das Feld im Admin-Panel und in allen API-Responses immer aktuell.
+
+### Typische Probleme & Lösungen
+- **404 auf /api/v1/admin/users/**: Die Route ist unter `/api/v1/auth/admin/users/` registriert. Im Frontend die URL entsprechend anpassen.
+- **Kein `results`-Array in der Response**: Pagination war nicht aktiviert. Lösung: Pagination in den DRF-Settings aktivieren (siehe oben).
+- **Felder `date_joined` und `last_login` fehlen**: Diese Felder wurden im UserSerializer ergänzt und sind jetzt immer enthalten.
+- **`last_login` bleibt leer**: Wird bei OAuth/JWT nicht automatisch gesetzt. Lösung: Nach jedem Login explizit setzen (siehe oben).
+- **Zugriffsbeschränkung**: Nur User mit `is_staff: true` können die Admin-API nutzen. Andernfalls gibt es 403 Forbidden.
+
+### Beispiel-Response (User-Detail)
+```json
+{
+  "id": 1,
+  "username": "admin",
+  "email": "admin@example.com",
+  "is_staff": true,
+  "is_active": true,
+  "ultra_name": "UltraAdmin",
+  "bio": "Ich bin der Admin.",
+  "avatar_url": "https://example.com/media/avatars/admin.png",
+  "avatar": "/media/avatars/admin.png",
+  "faction": { "id": 1, "name": "Fraktion A" },
+  "faction_id": 1,
+  "origin": { "id": 2, "name": "Erde" },
+  "origin_id": 2,
+  "missing_onboarding_fields": [],
+  "date_joined": "2024-07-15T12:34:56Z",
+  "last_login": "2024-07-16T08:00:00Z",
+  "level": 5,
+  "xp": 1234,
+  "rank": "Elite"
+}
+```
+
+---

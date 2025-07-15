@@ -8,6 +8,8 @@ from django.conf import settings
 from users.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 import traceback
+from django.utils import timezone
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class DiscordCallbackView(APIView):
     permission_classes = []  # public endpoint
@@ -72,6 +74,10 @@ class DiscordCallbackView(APIView):
                 }
             )
 
+            # Setze last_login explizit
+            user.last_login = timezone.now()
+            user.save(update_fields=["last_login"])
+
             # 4) Issue JWT tokens for this user
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
@@ -100,3 +106,18 @@ class DiscordCallbackView(APIView):
                 {"detail": "Internal server error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        # Setze last_login, falls Login erfolgreich
+        if response.status_code == 200:
+            from django.contrib.auth import authenticate, get_user_model
+            from django.utils import timezone
+            username = request.data.get('username')
+            password = request.data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user:
+                user.last_login = timezone.now()
+                user.save(update_fields=["last_login"])
+        return response

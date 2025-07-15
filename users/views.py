@@ -8,9 +8,10 @@ from rest_framework import status
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import MultiPartParser, FormParser
-
-from .forms import ProfileCompletionForm
+from rest_framework import viewsets, permissions
+from .models import User
 from .serializers import UserSerializer
+from .forms import ProfileCompletionForm
 
 
 @ensure_csrf_cookie
@@ -66,6 +67,14 @@ class MeView(APIView):
             return Response(UserSerializer(user).data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request):
+        """
+        🗑️ Löscht das eigene Benutzerkonto des eingeloggten Users.
+        """
+        user = request.user
+        user.delete()
+        return Response({"detail": "Account deleted."}, status=status.HTTP_204_NO_CONTENT)
+
 
 class AvatarUploadView(APIView):
     permission_classes = [IsAuthenticated]
@@ -81,3 +90,17 @@ class AvatarUploadView(APIView):
         user.avatar_url = request.build_absolute_uri(user.avatar.url)  # Dann URL setzen!
         user.save()
         return Response({"avatar": user.avatar_url}, status=status.HTTP_200_OK)
+
+
+class IsStaffPermission(permissions.BasePermission):
+    """Erlaubt nur is_staff-Usern den Zugriff."""
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated and request.user.is_staff)
+
+class UserAdminViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [IsStaffPermission]
+    search_fields = ["username", "ultra_name", "email"]
+    filterset_fields = ["is_active", "is_staff", "faction", "origin"]
+    ordering_fields = ["date_joined", "last_login", "username", "ultra_name"]

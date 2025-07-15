@@ -26,6 +26,9 @@ class UserSerializer(serializers.ModelSerializer):
     )
     missing_onboarding_fields = serializers.SerializerMethodField()
     avatar = serializers.ImageField(required=False, allow_null=True)
+    is_staff = serializers.BooleanField(read_only=True)
+    date_joined = serializers.DateTimeField(read_only=True)
+    last_login = serializers.DateTimeField(read_only=True)
 
     def get_missing_onboarding_fields(self, obj):
         missing = []
@@ -58,6 +61,9 @@ class UserSerializer(serializers.ModelSerializer):
             "origin",
             "origin_id",
             "missing_onboarding_fields",
+            "is_staff",
+            "date_joined",
+            "last_login",
         ]
 
 class DiscordJWTSerializer(SocialLoginSerializer):

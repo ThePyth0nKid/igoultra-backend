@@ -5,6 +5,11 @@ from users.views import get_csrf_token
 from users.views import MeView
 from .views import DiscordCallbackView
 from users.views import AvatarUploadView
+from rest_framework.routers import DefaultRouter
+from users.views import UserAdminViewSet
+
+router = DefaultRouter()
+router.register(r'admin/users', UserAdminViewSet, basename='admin-users')
 
 urlpatterns = [
     # 🔐 CSRF cookie setter
@@ -19,4 +24,6 @@ urlpatterns = [
     
     path("discord/callback/", DiscordCallbackView.as_view(), name="discord-callback"),
     path("avatar-upload/", AvatarUploadView.as_view(), name="avatar-upload"),
+    # Admin-User-API
+    path("", include(router.urls)),
 ]
