@@ -957,4 +957,34 @@ Das Onboarding- und Missionssystem ist jetzt API-first, modular und robust. Der 
 }
 ```
 
+### Season-Admin-API (CRUD für Seasons)
+- **GET /api/v1/seasons/** – Liste aller Seasons (paginierbar)
+- **POST /api/v1/seasons/** – Neue Season anlegen (nur is_staff)
+- **GET /api/v1/seasons/<id>/** – Season-Detail
+- **PATCH/PUT /api/v1/seasons/<id>/** – Season bearbeiten (nur is_staff)
+- **DELETE /api/v1/seasons/<id>/** – Season löschen (nur is_staff)
+- **Berechtigung:** Nur User mit `is_staff: true` dürfen Seasons anlegen, bearbeiten oder löschen. Alle anderen können nur lesen.
+- **Felder:**
+  - `id`, `name`, `start`, `end`, `is_active`
+- **Beispiel-Request (POST):**
+  ```json
+  {
+    "name": "Sommer 2024",
+    "start": "2024-08-01",
+    "end": "2024-09-01",
+    "is_active": true
+  }
+  ```
+- **Beispiel-Request (PATCH):**
+  ```json
+  {
+    "name": "Herbst 2024",
+    "is_active": false
+  }
+  ```
+- **Fehlerfälle:**
+  - 403 Forbidden: Kein is_staff-User
+  - 400 Bad Request: Ungültige Felder (z.B. Enddatum vor Startdatum)
+  - 409 Conflict: (optional, falls Backend das prüft) Es darf nur eine aktive Season geben
+
 ---

@@ -4,6 +4,7 @@ from rest_framework import status
 from seasons.models import Season, SeasonXp
 from .serializers import SeasonSerializer, SeasonXpSerializer
 from rest_framework import generics
+from rest_framework import viewsets, permissions
 
 class ActiveSeasonView(APIView):
     """
@@ -42,3 +43,14 @@ class SeasonXpListView(generics.ListAPIView):
         if layer_type:
             qs = qs.filter(layer_type=layer_type)
         return qs.order_by('-xp')
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return request.user and request.user.is_authenticated and request.user.is_staff
+
+class SeasonViewSet(viewsets.ModelViewSet):
+    queryset = Season.objects.all().order_by('-start')
+    serializer_class = SeasonSerializer
+    permission_classes = [IsStaffOrReadOnly]
