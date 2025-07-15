@@ -12,6 +12,7 @@ from rest_framework import viewsets, permissions
 from .models import User
 from .serializers import UserSerializer
 from .forms import ProfileCompletionForm
+from rest_framework import filters
 
 
 @ensure_csrf_cookie
@@ -101,6 +102,7 @@ class UserAdminViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [IsStaffPermission]
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     search_fields = ["username", "ultra_name", "email"]
     filterset_fields = ["is_active", "is_staff", "faction", "origin"]
     ordering_fields = ["date_joined", "last_login", "username", "ultra_name"]

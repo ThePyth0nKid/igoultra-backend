@@ -879,6 +879,11 @@ Das Onboarding- und Missionssystem ist jetzt API-first, modular und robust. Der 
 - Endpunkte für User-Liste, Detail, Bearbeiten, Anlegen, Löschen
 - Zugriff nur für eingeloggte User mit `is_staff: true`
 - Alle relevanten Felder: id, username, email, is_staff, is_active, ultra_name, bio, avatar_url, avatar, faction, origin, missing_onboarding_fields, date_joined, last_login, level, xp, rank
+- **Explizite Unterstützung für Suche, Filter und Sortierung:**
+  - `filter_backends = [filters.OrderingFilter, filters.SearchFilter]`
+  - **Suchfelder:** `username`, `ultra_name`, `email`
+  - **Filterfelder:** `is_active`, `is_staff`, `faction`, `origin`
+  - **Sortierfelder:** `date_joined`, `last_login`, `username`, `ultra_name`
 - Suche, Filter, Sortierung, Paginierung (DRF-Standard)
 
 ### API-Endpunkte
