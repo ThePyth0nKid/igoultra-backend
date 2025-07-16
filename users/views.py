@@ -110,6 +110,8 @@ class AvatarS3PresignView(APIView):
             Conditions=[{"Content-Type": file_type}],
             ExpiresIn=3600
         )
+        # Überschreibe das 'url'-Feld mit der region-spezifischen URL
+        presigned_post['url'] = f"https://{aws_storage_bucket_name}.s3.{aws_region_name}.amazonaws.com/"
         url = f"https://{aws_storage_bucket_name}.s3.{aws_region_name}.amazonaws.com/{key}"
         return Response({"data": presigned_post, "url": url, "key": key})
 
